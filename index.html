@@ -6,8 +6,8 @@
     <title>Samur.AI - Dark Metal Dashboard</title>
     
     <!-- PRECARGA CRÍTICA DE CURSORES (Evita parpadeos y retrasos) -->
-    <link rel="preload" href="https://cdn.cursors-4u.net/previews/oxygen-chrome-ccbed8ca-32.png" as="image">
-    <link rel="preload" href="https://cdn.cursors-4u.net/previews/oxygen-chrome-hand-68e4ac8c-32.png" as="image">
+    <link rel="preload" href="https://cdn.cursors-4u.net/previews/silver-pointer-9ad8344e-32.webp" as="image">
+    <link rel="preload" href="https://cdn.cursors-4u.net/previews/silver-pointer-link-select-0a21d68d-32.webp" as="image">
     
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,18 +37,25 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* --- DUAL CUSTOM CURSORS (NORMAL & INTERACTIVO) ROBUSTOS --- */
-        html, body {
-            cursor: url('https://cdn.cursors-4u.net/previews/oxygen-chrome-ccbed8ca-32.png') 16 16, auto;
+        /* --- SINGLE CUSTOM CURSOR GLOBAL --- */
+        * {
+            cursor: url('https://cdn.cursors-4u.net/previews/silver-pointer-9ad8344e-32.webp') 32 32, auto !important;
+        }
+        
+        a, button, input, textarea, select {
+            cursor: url('https://cdn.cursors-4u.net/previews/silver-pointer-9ad8344e-32.webp') 32 32, auto !important;
+        }
+        
+        *:active {
+            cursor: url('https://cdn.cursors-4u.net/previews/silver-pointer-9ad8344e-32.webp') 32 32, auto !important;
         }
 
-        /* Aplicación exclusiva a elementos interactivos sin !important para evitar colisiones */
-        a, button, [role="button"], input[type="button"], input[type="submit"], input[type="range"], label, .clickable,
-        .window-dot, #start-btn, .brand-icon, .nav-item, .btn-glass, .progress-container, .ctrl-btn, .render-img, 
-        .calendar-card, .css-saturn-container, .portfolio-card, .dl-icon, .icon-glass-fx, .custom-play-overlay, 
-        .carousel-item, #calHeaderBtn, .portfolio-inline-card, .tech-icon, .copy-url-btn, .download-thumb, .pcback-thumb {
-            cursor: url('https://cdn.cursors-4u.net/previews/oxygen-chrome-hand-68e4ac8c-32.png') 20 20, pointer;
+        /* Silver Pointer - Link Select - https://www.cursors-4u.com/cursor/silver-pointer-link-select */
+        a, button, [onclick], input[type="button"], input[type="submit"],
+        a:active, button:active, [onclick]:active, input[type="button"]:active, input[type="submit"]:active {
+            cursor: url('https://cdn.cursors-4u.net/previews/silver-pointer-link-select-0a21d68d-32.webp') 38 32, auto !important;
         }
+        /* End www.Cursors-4U.com Code */
 
         html, body {
             height: 100%;
@@ -483,7 +490,8 @@
         .custom-play-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center;
-            transition: opacity 0.5s ease, visibility 0.5s; z-index: 10; cursor: pointer;
+            transition: opacity 0.5s ease, visibility 0.5s; z-index: 20; cursor: pointer;
+            pointer-events: none; /* CRÍTICO: Evita bloquear los controles nativos del video */
         }
         .custom-play-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .glass-play-btn {
@@ -493,6 +501,7 @@
             display: flex; justify-content: center; align-items: center;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            pointer-events: auto; /* Mantiene el botón de play clickeable */
         }
         .custom-play-overlay:hover .glass-play-btn {
             background: rgba(255,255,255,0.25); transform: scale(1.15);
@@ -1279,7 +1288,7 @@
                             <div class="glass-card main-video-card" style="aspect-ratio: 16/9; max-width: 800px; padding: 0; overflow: hidden;">
                                 <div class="video-container">
                                     <!-- ===== CAMBIAR VIDEO Y MINIATURA (POSTER) INFERIOR (16:9) AQUÍ ===== -->
-                                    <video id="bottomVideo" poster="preview.jpg" playsinline preload="metadata">
+                                    <video id="bottomVideo" poster="preview.jpg" playsinline preload="metadata" controls style="position: relative; z-index: 10; pointer-events: auto;">
                                         <source src="video3.mp4" type="video/mp4">
                                     </video>
                                     <!-- Overlay Botón de Play Custom -->
