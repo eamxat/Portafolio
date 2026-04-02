@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Samur.AI - Dark Metal Dashboard</title>
+    
+    <!-- PRECARGA CRÍTICA DE CURSORES (Evita parpadeos y retrasos) -->
+    <link rel="preload" href="https://cdn.cursors-4u.net/previews/oxygen-chrome-ccbed8ca-32.png" as="image">
+    <link rel="preload" href="https://cdn.cursors-4u.net/previews/oxygen-chrome-hand-68e4ac8c-32.png" as="image">
+    
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Three.js para el Saturno Holográfico -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        /* ===== CAMBIAR COLORES AQUÍ ===== */
+        :root {
+            --bg-dark: #000000;
+            --accent: #e0e0e0; 
+            --accent-dim: #666666; 
+            --accent-glow: rgba(255, 255, 255, 0.3);
+            --glass-bg: rgba(255, 255, 255, 0.03); 
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-highlight: rgba(255, 255, 255, 0.25);
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* --- DUAL CUSTOM CURSORS (NORMAL & INTERACTIVO) ROBUSTOS --- */
+        html, body {
+            cursor: url('https://cdn.cursors-4u.net/previews/oxygen-chrome-ccbed8ca-32.png') 16 16, auto;
+        }
+
+        /* Aplicación exclusiva a elementos interactivos sin !important para evitar colisiones */
+        a, button, [role="button"], input[type="button"], input[type="submit"], input[type="range"], label, .clickable,
+        .window-dot, #start-btn, .brand-icon, .nav-item, .btn-glass, .progress-container, .ctrl-btn, .render-img, 
+        .calendar-card, .css-saturn-container, .portfolio-card, .dl-icon, .icon-glass-fx, .custom-play-overlay, 
+        .carousel-item, #calHeaderBtn, .portfolio-inline-card, .tech-icon, .copy-url-btn, .download-thumb {
+            cursor: url('https://cdn.cursors-4u.net/previews/oxygen-chrome-hand-68e4ac8c-32.png') 20 20, pointer;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            height: 100vh;
+            height: 100dvh; /* Soporte nativo iOS para evitar recorte de barra inferior */
+            overflow: hidden; 
+            position: relative;
+            padding-top: 65px; /* Espacio para la barra superior */
+            box-sizing: border-box;
+        }
+
+        /* Prevención de deformación de iconos en Safari/Chrome */
+        svg { flex-shrink: 0; }
+
+        /* --- FONDO GALAXY STARFIELD (CLEAN & CINEMATIC) --- */
+        body {
+            background-color: #000000 !important;
+        }
+        
+        .galaxy-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -10;
+            /* Deep space gradient: Black to ultra-dark purple/blue */
+            background: linear-gradient(135deg, #000000 0%, #030414 50%, #060212 100%);
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .galaxy-nebula {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(45, 20, 85, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 80% 70%, rgba(20, 45, 85, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(60, 20, 50, 0.1) 0%, transparent 50%);
+            filter: blur(50px);
+            animation: nebulaDrift 25s ease-in-out infinite alternate;
+        }
+
+        .star-drift {
+            position: absolute;
+            top: 0; left: 0;
+            background: transparent;
+            border-radius: 50%;
+        }
+
+        /* Duplicate layer for seamless infinite loop */
+        .star-drift::after {
+            content: "";
+            position: absolute;
+            top: 100vh;
+            left: 0;
+            width: inherit; height: inherit;
+            background: transparent;
+            box-shadow: inherit;
+            border-radius: inherit;
+        }
+
+        /* Small Stars - High quantity, slow drift */
+        .stars-s {
+            width: 1.5px; height: 1.5px;
+            box-shadow: 
+                4vw 12vh #fff, 14vw 48vh #fff, 24vw 8vh #fff, 34vw 62vh #fff, 44vw 22vh #fff, 
+                54vw 88vh #fff, 64vw 15vh #fff, 74vw 58vh #fff, 84vw 88vh #fff, 94vw 32vh #fff, 
+                8vw 38vh #fff, 18vw 82vh #fff, 28vw 18vh #fff, 38vw 88vh #fff, 48vw 42vh #fff, 
+                58vw 12vh #fff, 68vw 72vh #fff, 78vw 35vh #fff, 88vw 92vh #fff, 98vw 62vh #fff, 
+                12vw 5vh #fff, 22vw 72vh #fff, 32vw 42vh #fff, 42vw 95vh #fff, 52vw 18vh #fff, 
+                62vw 68vh #fff, 72vw 25vh #fff, 82vw 95vh #fff, 92vw 38vh #fff, 6vw 68vh #fff,
+                16vw 28vh #fff, 26vw 98vh #fff, 36vw 52vh #fff, 46vw 12vh #fff, 56vw 78vh #fff,
+                66vw 48vh #fff, 76vw 82vh #fff, 86vw 18vh #fff, 96vw 52vh #fff, 2vw 45vh #fff;
+            animation: starDriftUp 60s linear infinite;
+            opacity: 0.85;
+        }
+
+        /* Medium Stars - Medium quantity, medium drift */
+        .stars-m {
+            width: 2px; height: 2px;
+            box-shadow: 
+                10vw 25vh #fff, 20vw 85vh #fff, 30vw 15vh #fff, 40vw 65vh #fff, 50vw 25vh #fff, 
+                60vw 80vh #fff, 70vw 10vh #fff, 80vw 55vh #fff, 90vw 90vh #fff, 15vw 45vh #fff,
+                8vw 15vh #fff, 28vw 45vh #fff, 48vw 75vh #fff, 68vw 15vh #fff, 88vw 92vh #fff,
+                95vw 60vh #fff, 5vw 70vh #fff, 35vw 95vh #fff, 55vw 50vh #fff, 75vw 35vh #fff;
+            animation: starDriftUp 45s linear infinite;
+            opacity: 0.95;
+        }
+
+        /* Large Stars - Low quantity, fast drift, slight glow */
+        .stars-l {
+            width: 3px; height: 3px;
+            box-shadow: 
+                15vw 15vh 2px #fff, 35vw 75vh 2px #fff, 55vw 18vh 2px #fff, 75vw 85vh 2px #fff, 
+                95vw 30vh 2px #fff, 12vw 88vh 2px #fff, 45vw 42vh 2px #fff, 82vw 22vh 2px #fff,
+                25vw 55vh 2px #fff, 65vw 92vh 2px #fff;
+            animation: starDriftUp 30s linear infinite;
+            opacity: 1;
+        }
+
+        @keyframes starDriftUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100vh); }
+        }
+        
+        @keyframes nebulaDrift {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+            50% { transform: scale(1.05) translate(2%, 2%); opacity: 1; }
+            100% { transform: scale(1) translate(-2%, -2%); opacity: 0.8; }
+        }
+
+        /* CORRECCIÓN CRÍTICA DE ARTIFACTS: Ocultar ruido y líneas conectadas */
+        #particles-canvas, .noise-overlay, .connector-svg {
+            display: none !important;
+        }
+
+        /* Mejora táctil general para evitar delay en iOS */
+        button, a, .nav-item, .window-dot, .carousel-item, .glass-card, .custom-play-overlay, .portfolio-inline-card {
+            touch-action: manipulation;
+        }
+
+        /* --- SCROLLBAR ESTILO GLASSMORPHISM PREMIUM (GLOBAL E INTERNO) --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1); 
+            border-radius: 10px;
+            margin: 4px 0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15); /* Fondo translúcido tipo cristal */
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Borde sutil con transparencia blanca */
+            box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.1); /* Leve profundidad */
+            transition: all 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3); /* Brillo sutil al hacer hover */
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: inset 1px 1px 5px rgba(255, 255, 255, 0.3), 0 0 10px rgba(255, 255, 255, 0.15); /* Efecto glow coherente con el glassmorphism */
+        }
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        /* --- 1.5 TOP NAVBAR (APPLE/FUTURISTIC) --- */
+        .top-navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 65px;
+            background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 9998; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 25px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .nav-left { display: flex; gap: 6px; align-items: center; width: 100px; }
+        
+        .window-dot {
+            width: 10px; height: 10px; border-radius: 50%; cursor: pointer; transition: 0.3s;
+            background: linear-gradient(145deg, #e6e6e6, #bfbfbf, #8f8f8f);
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -1px -1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .window-dot:hover { filter: brightness(1.2); }
+
+        .nav-center { flex-grow: 1; display: flex; justify-content: center; }
+        .url-bar {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 24px; border-radius: 20px; display: flex; align-items: center; gap: 12px;
+            color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-display);
+            letter-spacing: 2px; transition: all 0.3s ease; cursor: default;
+        }
+        .url-bar:hover { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: rgba(255, 255, 255, 0.3); box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); }
+        .nav-right { display: flex; align-items: center; justify-content: flex-end; gap: 15px; width: 100px; color: var(--text-muted); }
+        @media (max-width: 768px) { .nav-left, .nav-right { display: none; } .url-bar { font-size: 0.7rem; padding: 6px 15px; width: 100%; justify-content: center; } }
+
+        /* --- 2. PANTALLA DE ATERRIZAJE (INTRO) --- */
+        #landing-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50000; background: #000; display: flex; justify-content: center; align-items: center;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s; overflow: hidden;
+        }
+        #landing-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #landing-bg-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; z-index: 0; }
+        .landing-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; height: 100%; padding-bottom: 0; }
+        .landing-image-container { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: flex-end; }
+        .landing-render { width: auto; height: auto; max-height: 85vh; max-width: 100%; object-fit: contain; filter: drop-shadow(0 0 30px rgba(0,0,0,0.8)); animation: breathe 4s ease-in-out infinite; position: relative; z-index: 1; }
+        .landing-gradient { position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background: linear-gradient(to top, #000 15%, transparent 100%); z-index: 2; pointer-events: none; }
+        
+        #start-btn {
+            position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
+            padding: 18px 50px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #fff; font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 4px;
+            cursor: pointer; backdrop-filter: blur(15px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border-radius: 4px;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%); z-index: 10;
+        }
+        #start-btn:hover { background: #fff; color: #000; box-shadow: 0 0 50px rgba(255,255,255,0.4); transform: translateX(-50%) scale(1.05); }
+
+        /* --- FONDO APP --- */
+        #main-app { width: 100%; height: 100%; position: relative; opacity: 0; transition: opacity 2s ease-in-out 0.5s; }
+        #main-app.visible { opacity: 1; }
+        .background-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; background: radial-gradient(circle at 50% -20%, #222 0%, #000000 80%); }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.4; }
+        .warm-glow { position: fixed; bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); filter: blur(100px); z-index: -1; opacity: 0.4; animation: pulseGlow 8s infinite alternate; }
+        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none; opacity: 0.05; background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJnoiPjxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjY1IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2cpIiBvcGFjaXR5PSIxIi8+PC9zdmc+'); filter: grayscale(100%); }
+
+        .metallic-text {
+            background: linear-gradient(to right, #888 20%, #fff 40%, #ccc 60%, #888 80%); background-size: 200% auto;
+            color: #fff; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-5px) scale(1.01); } }
+
+        #page-transition-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 10000; pointer-events: none; opacity: 0; transition: opacity 0.8s ease-in-out; }
+
+        /* --- LAYOUT GENERAL --- */
+        .layout-container { display: grid; grid-template-columns: 80px 1fr 320px; height: calc(100vh - 65px); height: calc(100dvh - 65px); width: 100%; }
+
+        /* Sidebar */
+        .sidebar { display: flex; flex-direction: column; align-items: center; padding-top: 40px; border-right: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); z-index: 10; }
+        .brand-icon { width: 50px; height: 50px; border-radius: 50%; margin-bottom: 60px; display: grid; place-items: center; overflow: hidden; box-shadow: 0 0 15px rgba(255,255,255,0.4); border: 2px solid rgba(255,255,255,0.2); transition: all 0.3s ease; cursor: pointer; }
+        .brand-icon:hover { width: 80px; height: 80px; }
+        .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .nav-item { color: var(--text-muted); margin-bottom: 30px; cursor: pointer; transition: 0.3s; position: relative; display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; }
+        .nav-item:hover, .nav-item.active { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.6); }
+        .nav-item.active::after { content: ''; position: absolute; left: -20px; top: 50%; transform: translateY(-50%); width: 4px; height: 20px; background: #fff; box-shadow: 0 0 10px #fff; border-radius: 0 4px 4px 0; }
+
+        /* Main */
+        .main-canvas { position: relative; padding: 40px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+        .content-wrapper { width: 100%; max-width: 1600px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; position: relative; z-index: 1; }
+
+        /* Right Panel */
+        .right-panel { padding: 30px; display: flex; flex-direction: column; gap: 24px; border-left: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.4); backdrop-filter: blur(25px); z-index: 10; overflow-y: auto; }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--glass-bg); backdrop-filter: blur(25px) saturate(0%); -webkit-backdrop-filter: blur(25px) saturate(0%);
+            border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+            color: var(--text-main); transition: all 0.4s ease; position: relative; overflow: hidden;
+            max-width: 100vw;
+        }
+        .glass-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.8); border-color: rgba(255,255,255,0.3); }
+        
+        /* Utilidad para evitar recortes en tarjetas dinámicas */
+        .overflow-visible { overflow: visible !important; }
+
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        .float-anim-delay { animation: float 7s ease-in-out infinite 1s; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes pulseGlow { 0% { opacity: 0.3; transform: scale(1); } 100% { opacity: 0.5; transform: scale(1.1); } }
+        
+        /* Animaciones para cambio de sección dinámico */
+        .fade-in-section-anim { animation: fadeInSection 0.4s ease forwards; }
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- NUEVO MÓDULO DE PORTAFOLIO INLINE --- */
+        .portfolio-inline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .portfolio-inline-card {
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+        .portfolio-inline-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.15);
+            border-color: rgba(220, 220, 220, 0.4);
+        }
+        
+        /* Corrección de proporciones para placeholders del portfolio */
+        .portfolio-placeholder {
+            width: 100%;
+            height: 100%;
+            max-width: 35%; /* Reducido como se solicitó */
+            max-height: 35%; /* Reducido como se solicitó */
+            object-fit: contain;
+            position: absolute;
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            transition: opacity 0.4s ease;
+            opacity: 0.8;
+        }
+        
+        .portfolio-inline-card:hover .portfolio-placeholder {
+            opacity: 0;
+        }
+        .portfolio-inline-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            outline: none;
+        }
+        .portfolio-inline-card:hover .portfolio-inline-video {
+            opacity: 1;
+        }
+
+        /* --- TECNOLOGÍAS CAROUSEL --- */
+        .tech-carousel-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 10px 0 20px 0;
+            scrollbar-width: none; /* Firefox */
+        }
+        .tech-carousel-container::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+        .tech-carousel {
+            display: flex;
+            gap: 45px;
+            align-items: center;
+            justify-content: center;
+            min-width: max-content;
+            padding: 0 20px;
+        }
+        @media (max-width: 768px) {
+            .tech-carousel { justify-content: flex-start; }
+        }
+        .tech-icon {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+            filter: grayscale(100%) opacity(0.7);
+            transition: filter 0.4s ease, transform 0.4s ease;
+        }
+        .tech-icon:hover {
+            filter: grayscale(0%) opacity(1);
+            transform: scale(1.15) translateY(-5px);
+        }
+
+        /* --- COMPONENTS --- */
+        .portfolio-hero-clean { padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 150px; text-align: center; margin-bottom: 20px; }
+        .btn-glass {
+            padding: 18px 45px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px;
+            color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 1rem; letter-spacing: 2px;
+            cursor: pointer; backdrop-filter: blur(10px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 12px; text-transform: uppercase; position: relative; overflow: hidden;
+            box-shadow: 0 0 15px rgba(255,255,255,0.1); 
+        }
+        .btn-glass::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); transition: 0.5s; }
+        .btn-glass:hover { background: rgba(255,255,255,0.2); box-shadow: 0 0 30px rgba(255,255,255,0.4); border-color: #fff; transform: scale(1.05); }
+        .btn-glass:hover::before { left: 100%; }
+
+        /* Grid Layouts */
+        .central-video-section { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
+        .main-video-card { width: 100%; max-width: 800px; aspect-ratio: 1/1; border: 1px solid rgba(255,255,255,0.3); }
+        .dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+
+        /* --- MUSIC PLAYER & EQUALIZER --- */
+        .music-player { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .equalizer-container {
+            width: 100%; height: 70px; background: rgba(0,0,0,0.5); border-radius: var(--radius-md); 
+            overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; justify-content: center; align-items: flex-end; padding-bottom: 5px; gap: 6px;
+            position: relative; box-shadow: inset 0 5px 15px rgba(0,0,0,0.8);
+        }
+        .equalizer-container::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(transparent 95%, rgba(255, 255, 255, 0.05) 95%),
+                        linear-gradient(90deg, transparent 95%, rgba(255, 255, 255, 0.05) 95%);
+            background-size: 10px 10px; pointer-events: none; z-index: 0;
+        }
+        .eq-bar {
+            width: 10px; background: linear-gradient(to top, #444, #aaa, #fff);
+            border-radius: 4px 4px 0 0; z-index: 1; height: 10%;
+            transition: height 0.15s ease; box-shadow: 0 0 8px rgba(255,255,255,0.3);
+        }
+        
+        .song-info h3 { font-family: var(--font-display); font-size: 0.9rem; color: #fff; margin-bottom: 2px; }
+        .song-info p { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .progress-container { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; cursor: pointer; position: relative; }
+        .progress-bar { height: 100%; background: #fff; width: 0%; border-radius: 3px; position: relative; box-shadow: 0 0 10px #fff; }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 10px;}
+        .ctrl-group { display: flex; align-items: center; gap: 15px; }
+        .ctrl-btn { background: none; border: none; color: #fff; cursor: pointer; opacity: 0.7; transition: 0.2s; }
+        .ctrl-btn:hover { opacity: 1; transform: scale(1.2); text-shadow: 0 0 10px #fff; }
+        .play-btn { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .play-btn:hover { background: #fff; border-color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.5); color: #000; }
+        
+        /* Volume control compatibilidad Cross-Browser */
+        .vol-control { display: flex; align-items: center; gap: 8px; }
+        .vol-slider { 
+            width: 70px; cursor: pointer; accent-color: #fff;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+            background: rgba(255,255,255,0.1); height: 4px; border-radius: 2px; outline: none;
+        }
+        .vol-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer;
+        }
+        .vol-slider::-moz-range-thumb {
+            width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer; border: none;
+        }
+
+        /* Video Container General */
+        .video-container { width: 100%; height: 100%; background: #000; position: relative; overflow: hidden; border-radius: var(--radius-lg); }
+        video { width: 100%; height: 100%; object-fit: cover; opacity: 1; outline: none;} 
+        .holo-label { position: absolute; top: 15px; left: 20px; font-family: var(--font-display); font-size: 0.7rem; color: #fff; letter-spacing: 2px; z-index: 5; text-transform: uppercase; border: 1px solid #fff; padding: 2px 8px; animation: blink 3s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* --- REPRODUCTOR INFERIOR CON PLAY OVERLAY GLASSMORPHISM --- */
+        .custom-play-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s; z-index: 10; cursor: pointer;
+        }
+        .custom-play-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .glass-play-btn {
+            width: 70px; height: 70px; border-radius: 50%;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .custom-play-overlay:hover .glass-play-btn {
+            background: rgba(255,255,255,0.25); transform: scale(1.15);
+            border-color: #fff; box-shadow: 0 15px 40px rgba(255,255,255,0.4);
+        }
+
+        /* Gallery */
+        .gallery-section { height: 280px; perspective: 1200px; display: flex; align-items: center; justify-content: center; margin-top: 30px; }
+        .carousel { width: 140px; height: 180px; position: relative; transform-style: preserve-3d; animation: rotate 25s infinite linear; }
+        .gallery-section:hover .carousel { animation-play-state: paused; }
+        .carousel-item { position: absolute; width: 140px; height: 180px; left: 0; top: 0; background: #000; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden; box-shadow: 0 0 15px rgba(255,255,255,0.05); cursor: pointer; transition: transform 0.3s; }
+        .carousel-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
+        .carousel-item:hover img { opacity: 1; box-shadow: 0 0 20px #fff; }
+        .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(260px); } .carousel-item:nth-child(2) { transform: rotateY(45deg) translateZ(260px); } .carousel-item:nth-child(3) { transform: rotateY(90deg) translateZ(260px); } .carousel-item:nth-child(4) { transform: rotateY(135deg) translateZ(260px); } .carousel-item:nth-child(5) { transform: rotateY(180deg) translateZ(260px); } .carousel-item:nth-child(6) { transform: rotateY(225deg) translateZ(260px); } .carousel-item:nth-child(7) { transform: rotateY(270deg) translateZ(260px); } .carousel-item:nth-child(8) { transform: rotateY(315deg) translateZ(260px); }
+        @keyframes rotate { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        
+        /* Render Section */
+        .render-section { display: flex; justify-content: center; align-items: flex-end; margin-top: 80px; position: relative; min-height: 700px; }
+        .render-img { width: 100%; max-width: 1000px; height: auto; -webkit-mask-image: linear-gradient(to top, transparent, black 15%, black 100%); mask-image: linear-gradient(to top, transparent, black 15%, black 100%); opacity: 0; transform: translateY(100px); transition: opacity 1.5s cubic-bezier(0.19, 1, 0.22, 1), transform 1.5s cubic-bezier(0.19, 1, 0.22, 1), filter 0.5s ease; filter: drop-shadow(0 0 20px rgba(255,255,255,0.1)); cursor: pointer; will-change: transform, opacity; }
+        .render-img.reveal-active { opacity: 1; transform: translateY(0); }
+        .render-img.reveal-active:hover { transform: translateY(-20px) scale(1.03); filter: drop-shadow(0 20px 40px rgba(255,255,255,0.4)); }
+        .render-shadow { position: absolute; bottom: 0; left: 0; width: 100%; height: 300px; background: linear-gradient(to top, rgba(255,255,255,0.15), transparent); filter: blur(50px); z-index: -1; pointer-events: none; }
+
+        /* Stats */
+        .stat-card { display: flex; justify-content: space-between; align-items: center; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-value { font-family: var(--font-display); font-size: 1.4rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .stat-label { font-size: 0.7rem; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- NUEVO MÓDULO COMBINADO (RELOJ + CALENDARIO) --- */
+        .time-date-module {
+            min-height: 140px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+        }
+        .time-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* --- CALENDARIO FLOTANTE WINDOWS STYLE CORREGIDO --- */
+        .calendar-card { cursor: pointer; transition: all 0.3s ease; position: relative; z-index: 50; }
+        .calendar-card:hover { border-color: rgba(255,255,255,0.4); }
+        
+        .calendar-popup {
+            position: absolute; 
+            top: calc(100% + 15px); 
+            left: 50%; 
+            transform: translateX(-50%) translateY(-10px); 
+            width: 280px; 
+            padding: 24px;
+            background: rgba(12, 12, 12, 0.98); 
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg); 
+            box-shadow: 0 25px 60px rgba(0,0,0,1), 0 0 20px rgba(255,255,255,0.05);
+            backdrop-filter: blur(30px) saturate(180%); 
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            z-index: 99999; 
+            display: flex; 
+            flex-direction: column; 
+            cursor: default;
+            opacity: 0; 
+            visibility: hidden; 
+            pointer-events: none; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-sizing: border-box;
+        }
+        .calendar-popup.open { 
+            opacity: 1; 
+            visibility: visible; 
+            pointer-events: auto; 
+            transform: translateX(-50%) translateY(0); 
+        }
+        .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cal-nav button { 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: #fff; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .cal-nav button:hover { background: rgba(255,255,255,0.2); border-color: #fff; transform: scale(1.05); }
+        #calMonthYear { font-family: var(--font-display); font-weight: bold; color: #fff; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
+        .cal-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; color: var(--text-muted); font-size: 0.75rem; font-weight: bold; margin-bottom: 12px; }
+        .cal-grid-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 0.85rem; color: #fff; }
+        .cal-day { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            aspect-ratio: 1/1; 
+            border-radius: 8px; 
+            cursor: default; 
+            transition: 0.2s; 
+            font-family: var(--font-body); 
+            font-weight: 500;
+        }
+        .cal-day:hover:not(.empty) { background: rgba(255,255,255,0.1); transform: scale(1.05); }
+        .cal-day.today { background: var(--accent); color: #000; font-weight: 900; box-shadow: 0 0 15px rgba(255,255,255,0.4); transform: scale(1.05); }
+        .cal-day.empty { background: transparent; cursor: default; }
+
+        /* SVG & SATURN */
+        .connector-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.3; }
+        path.dashed-line { fill: none; stroke: rgba(255,255,255,0.3); stroke-width: 1; stroke-dasharray: 4 4; filter: drop-shadow(0 0 2px #fff); }
+        .css-saturn-container { width: 100%; height: 300px; margin-top: 30px; display: flex; justify-content: center; align-items: center; perspective: 1000px; mix-blend-mode: screen; opacity: 0.9; cursor: pointer; transition: transform 0.5s; }
+        .css-saturn-container:hover { transform: scale(1.1); }
+        .css-saturn-container:hover .planet { animation: spinPlanet 3s linear infinite, floatPlanet 6s ease-in-out infinite; }
+        .css-saturn-container:hover .rings { animation: rotateRings 3s linear infinite; }
+        .planet { 
+            width: 150px; height: 150px; border-radius: 50%; 
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 40%, rgba(0,0,0,0.7) 100%),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 15px),
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 15px);
+            background-size: 100% 100%, 200% 100%, 100% 100%; 
+            box-shadow: 0 0 20px rgba(255,255,255,0.05), inset -10px -10px 20px rgba(0,0,0,0.8), inset 10px 10px 20px rgba(255,255,255,0.1); 
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            position: relative; transform-style: preserve-3d; 
+            animation: spinPlanet 15s linear infinite, floatPlanet 6s ease-in-out infinite; 
+        }
+        .rings { position: absolute; top: 50%; left: 50%; width: 320px; height: 320px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); border-top: 3px solid rgba(255,255,255,0.7); border-left: 2px solid rgba(255,255,255,0.3); transform: translate(-50%, -50%) rotateX(75deg); box-shadow: inset 0 0 30px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,0.1); animation: rotateRings 12s linear infinite; }
+        .rings::before { content: ''; position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); }
+        @keyframes spinPlanet { 0% { background-position: 0 0, 0 0, 0 0; } 100% { background-position: 0 0, -200% 0, 0 0; } }
+        @keyframes floatPlanet { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes rotateRings { 0% { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg); } 100% { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); } }
+
+        /* Modals */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); z-index: 10000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+        .modal.active { display: flex; opacity: 1; }
+        .modal-content { width: 85%; max-width: 900px; height: 80%; padding: 40px; overflow-y: auto; background: rgba(20,20,20,0.8); border: 1px solid rgba(255,255,255,0.1); }
+        .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; z-index: 10; }
+        
+        .downloads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .download-item { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); transition: 0.3s; background: #000; }
+        .download-item:hover { border-color: #fff; transform: translateY(-5px); box-shadow: 0 5px 20px rgba(255,255,255,0.1); }
+        
+        /* CORRECCIÓN: Galería a todo color original y funcional para preview */
+        .download-thumb { width: 100%; height: 150px; object-fit: cover; transition: 0.3s; cursor: pointer; }
+        .download-btn-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px; background: linear-gradient(to top, black, transparent); display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
+        /* Permitir clics solo en el botón de la imagen (para que el overlay no bloquee el thumb) */
+        .copy-url-btn { pointer-events: auto; }
+        .dl-icon { color: white; cursor: pointer; transition: 0.2s; }
+        .dl-icon:hover { transform: scale(1.2); text-shadow: 0 0 10px #fff; }
+
+        /* --- ESTILOS NUEVOS: LOGO ANIMADO Y GALERÍA PORTAFOLIO --- */
+        .hero-image-wrapper {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            max-width: 100%;
+        }
+        .hero-logo-img {
+            height: 55px; /* Tamaño ajustado proporcionalmente al original */
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 15px rgba(255, 255, 255, 0.15));
+            position: relative;
+            z-index: 1;
+        }
+        .hero-image-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg, 
+                transparent 25%, 
+                rgba(220, 220, 220, 0.7) 45%, 
+                rgba(255, 255, 255, 0.9) 50%, 
+                rgba(220, 220, 220, 0.7) 55%, 
+                transparent 75%
+            );
+            background-size: 200% 100%;
+            animation: imageShine 2.5s linear infinite;
+            z-index: 2;
+            pointer-events: none;
+            -webkit-mask-image: url('https://i.imgur.com/NDSqVKl.png');
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-image: url('https://i.imgur.com/NDSqVKl.png');
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+        }
+        @keyframes imageShine {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* =========================================
+           RESPONSIVE DESIGN (TABLET & MOBILE)
+           ========================================= */
+        @media (max-width: 1024px) {
+            .layout-container { 
+                display: flex; 
+                flex-direction: column; 
+                overflow-y: auto; 
+                overflow-x: hidden; 
+            }
+            .main-canvas { 
+                order: 1;
+                overflow-y: visible; 
+                padding: 20px; 
+                flex-shrink: 0;
+            }
+            .right-panel { 
+                order: 2;
+                overflow-y: visible; 
+                border-left: none; 
+                border-top: 1px solid rgba(255,255,255,0.05); 
+                padding: 20px; 
+                padding-bottom: 40px; /* Espacio extra sobre nav inferior */
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                flex-shrink: 0;
+            }
+            .sidebar { 
+                order: 3;
+                flex-direction: row; 
+                width: 100%; 
+                height: auto; 
+                padding: 15px 20px; 
+                border-right: none; 
+                border-top: 1px solid rgba(255,255,255,0.1); 
+                justify-content: space-around; 
+                z-index: 100;
+                position: sticky;
+                bottom: 0;
+                background: rgba(10,10,10,0.9);
+                backdrop-filter: blur(25px);
+                -webkit-backdrop-filter: blur(25px);
+            }
+            .brand-icon { margin-bottom: 0; width: 40px; height: 40px; }
+            .nav-item { margin-bottom: 0; }
+            .nav-item.active { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.6); transform: translateY(-3px); }
+            .nav-item.active::after { display: none; } 
+            
+            .modal-content { width: 95%; height: 85%; padding: 20px; }
+            .close-modal { top: 10px; right: 15px; }
+            .downloads-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.2rem; }
+            .hero-logo-img { height: 40px; } /* Ajuste del logo para móvil */
+            .btn-glass { flex: 1 1 100%; justify-content: center; padding: 15px 20px; font-size: 0.9rem; }
+            .dual-grid { grid-template-columns: 1fr; }
+            
+            /* Ajustar Galería 3D para evitar overflow horizontal */
+            .gallery-section { transform: scale(0.65); height: 180px; margin-top: 10px; }
+            
+            /* Ajustar Render Gigante inferior para móvil */
+            .render-section { min-height: 350px; margin-top: 20px; overflow: hidden; }
+            .render-img { width: 140%; max-width: none; margin-left: -20%; transform: translateY(30px); }
+            
+            .right-panel { grid-template-columns: 1fr; }
+            
+            /* Ajuste del Calendario Popup en móvil para centrar perfecto */
+            .calendar-popup {
+                width: 100%;
+                min-width: 280px;
+                left: 50%;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            .calendar-popup.open {
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* XAT WIDGET */
+        .xat-profile-widget { --mp-img-size: 46px; --mp-pawn-w: 30px; --mp-pawn-h: 30px; --mp-name-size: 1rem; --mp-sub-size: 0.7rem; font-family: var(--font-body); display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; width: fit-content; }
+        .mini-profile-container { display: flex; justify-content: center; width: auto; }
+        .mini-profile-content { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto; column-gap: 12px; align-items: start; color: #e0e0e0; }
+        .mini-profile-link { grid-column: 1; grid-row: 1 / 3; align-self: center; transition: transform 0.2s; display: block; text-decoration: none; position: relative; }
+        
+        /* Modificación: Avatar inicial en Blanco y Negro (Sin Glow) */
+        .mini-profile-img { 
+            width: var(--mp-img-size); height: var(--mp-img-size); border-radius: 50%; object-fit: cover; 
+            border: 2px solid rgba(255,255,255,0.2); 
+            transition: 0.4s ease; position: relative; 
+            filter: grayscale(100%); 
+        }
+        
+        @media (hover: hover) {
+            /* Modificación: Recuperar color al hacer hover (Sin Glow) */
+            .mini-profile-img:hover { 
+                transform: scale(1.74); border-color: #fff; z-index: 10; 
+                filter: grayscale(0%); 
+            }
+        }
+
+        /* --- NUEVO: Efecto Shine para el Avatar (idéntico a Portafolio) --- */
+        .mini-profile-link::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: var(--mp-img-size);
+            height: var(--mp-img-size);
+            border-radius: 50%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            background-size: 250% 100%;
+            background-position: -200% 0;
+            pointer-events: none;
+            transition: transform 0.4s ease; /* Sincronizado con la transición de la imagen */
+            z-index: 20;
+        }
+        .mini-profile-link:hover::after {
+            transform: scale(1.74); /* Mismo escalado que el avatar para encajar perfecto */
+            animation: avatarShineSweep 0.5s ease-out forwards;
+        }
+        @keyframes avatarShineSweep {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .mp-main-info { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; justify-content: center; line-height: 1.1; }
+        .mp-line1 { display: flex; align-items: center; gap: 0px; }
+        .mp-pawn-icon { width: var(--mp-pawn-w); height: var(--mp-pawn-h); object-fit: contain; margin-right: 2px; }
+        
+        @keyframes waveGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ===== CAMBIAR GRADIENTE DE TEXTO AQUÍ (Eam) ===== */
+        .mp-name-eam { 
+            font-family: var(--font-display); 
+            font-size: 0.9rem; 
+            background: linear-gradient(90deg, #121734, #4D5B90, #8A9CCC, #4D5B90, #121734); 
+            background-size: 200% auto;
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            font-weight: 700; 
+            letter-spacing: 0.5px; 
+            animation: waveGradient 3s linear infinite;
+        }
+
+        /* --- ESTILOS NUEVOS: EFECTO LIMPIO PARA ICONOS --- */
+        .icon-glass-fx:not(.brand-icon) {
+            background: transparent !important;
+            border: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+        
+        .icon-glass-fx {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.25s ease !important;
+            cursor: pointer;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .icon-glass-fx:hover {
+            transform: scale(1.08) !important;
+        }
+
+        .icon-glass-fx img, .icon-glass-fx svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .silver-text {
+            background: linear-gradient(
+                25deg,
+                #6e6e6e 0%,
+                #ffffff 20%,
+                #a8a8a8 35%,
+                #ffffff 50%,
+                #5a5a5a 65%,
+                #dcdcdc 80%,
+                #7a7a7a 100%
+            );
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: silverWave 8s ease-in-out infinite;
+        }
+        /* 🔧 PERSONALIZACIÓN:
+        Ajusta estos HEX para cambiar el look del metal:
+        #ffffff → brillo fuerte
+        #dcdcdc → plata clara
+        #a8a8a8 → tono medio
+        #6e6e6e / #5a5a5a → sombras profundas
+        */
+        @keyframes silverWave {
+            0% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 50% 40%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            75% {
+                background-position: 50% 60%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .mp-line2 { grid-column: 2; grid-row: 2; font-size: var(--mp-sub-size); color: #888; font-weight: 500; margin-top: 2px; }
+        .mp-status { grid-column: 2; grid-row: 3; display: flex; align-items: center; gap: 6px; margin-top: 4px; cursor: default; }
+        .status-dot { width: 6px; height: 6px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; animation: widget-pulse-green 2s infinite; }
+        .status-text { font-size: 0.6rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-heart { font-size: 10px; animation: widget-pulse-heart 1.5s infinite; display: inline-block; }
+        .widget-heart-particle { position: fixed; pointer-events: none; font-size: 24px; z-index: 99999; animation: widget-float-up 1.5s ease-out forwards; }
+        @keyframes widget-pulse-green { 0% { transform: scale(0.95); opacity: 0.7; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.7; } }
+        @keyframes widget-pulse-heart { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+        @keyframes widget-float-up { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.5); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVIGATION BAR -->
+    <nav class="top-navbar">
+        <div class="nav-left" style="gap: 6px;">
+            <span class="window-dot dot-red"></span>
+            <span class="window-dot dot-yellow"></span>
+            <span class="window-dot dot-green"></span>
+        </div>
+        <div class="nav-center">
+            <div class="url-bar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <!-- ===== CAMBIAR TEXTO URL DE BARRA SUPERIOR AQUÍ ===== -->
+                <span>https://xat.com/eam96</span>
+            </div>
+        </div>
+        <div class="nav-right" style="gap: 12px;">
+            <div class="icon-glass-fx rounded" style="width: 28px; height: 28px; padding: 4px; color: var(--text-muted);">
+                <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+            </div>
+            <span>100%</span>
+        </div>
+    </nav>
+
+    <!-- PANTALLA DE ATERRIZAJE (INTRO) -->
+    <div id="landing-screen">
+        <!-- ===== CAMBIAR VIDEO DE FONDO INTRO AQUÍ (ej. intro.mp4) ===== -->
+        <video id="landing-bg-video" autoplay loop muted playsinline>
+            <source src="intro.mp4" type="video/mp4">
+        </video>
+        
+        <div class="landing-content">
+            <div class="landing-image-container">
+                <!-- ===== CAMBIAR IMAGEN RENDER DE INTRO AQUÍ (ej. render-inicio.jpg) ===== -->
+                <img src="render-inicio.jpg" alt="Protocol Samur.AI" class="landing-render">
+                <div class="landing-gradient"></div>
+            </div>
+            <!-- ===== CAMBIAR TEXTO BOTÓN INTRO AQUÍ ===== -->
+            <button id="start-btn">INICIAR SISTEMA</button>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="main-app">
+        <!-- Fondo Galaxy Starfield -->
+        <div class="galaxy-bg">
+            <div class="galaxy-nebula"></div>
+            <div class="star-drift stars-s"></div>
+            <div class="star-drift stars-m"></div>
+            <div class="star-drift stars-l"></div>
+        </div>
+
+        <div class="background-layer"></div>
+        <div class="warm-glow"></div>
+        <div id="page-transition-overlay"></div>
+
+        <!-- Lightbox -->
+        <div id="lightbox">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+        </div>
+
+        <!-- Modal GALERÍA PSTYLE -->
+        <div id="downloadsModal" class="modal">
+            <div class="glass-card modal-content">
+                <h2 class="metallic-text" style="font-size: 2rem; margin-bottom: 30px;">GALERÍA PSTYLE GRATUITA</h2>
+                <div class="downloads-grid" id="downloadsGrid"></div>
+            </div>
+        </div>
+
+        <div class="layout-container">
+            <!-- Sidebar / Navegación Inferior en Móviles -->
+            <nav class="sidebar glass">
+                <!-- Avatar Izquierdo Eliminado Visualmente (Oculto para no romper HTML) -->
+                <div class="brand-icon icon-glass-fx circle" title="Perfil" style="border-width: 2px !important; display: none !important;">
+                    <img src="https://i.imgur.com/M5DW0HN.png" alt="S Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                
+                <div class="nav-item active" id="homeBtn" title="Dashboard">
+                    <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
+                        <img src="https://i.imgur.com/EXB5d3I.png" alt="Home">
+                    </div>
+                </div>
+                
+                <div class="nav-item" id="folderBtn" title="Archivos">
+                    <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
+                        <img src="https://i.imgur.com/v1dAhMt.png" alt="Archivos">
+                    </div>
+                </div>
+                
+                <a href="https://xat.com/xatframe" target="_blank" class="nav-item" title="Saturno" style="margin-top: auto; margin-bottom: 15px;">
+                    <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
+                        <img src="https://i.imgur.com/DYxJosA.png" alt="Saturno">
+                    </div>
+                </a>
+                
+                <a href="https://xat.com/ayuda" target="_blank" class="nav-item" title="Ayuda" style="margin-top: 0; margin-bottom: 30px;">
+                    <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
+                        <img src="https://i.imgur.com/8AcK04v.png" alt="Ayuda">
+                    </div>
+                </a>
+            </nav>
+
+            <!-- Main Canvas -->
+            <main class="main-canvas">
+                <svg class="connector-svg">
+                    <path d="M 300 200 Q 400 200, 400 350" class="dashed-line" />
+                    <path d="M 600 200 Q 700 200, 750 450" class="dashed-line" />
+                </svg>
+
+                <div class="content-wrapper">
+                    <!-- Hero Clean -->
+                    <div class="portfolio-hero-clean float-anim">
+                        <!-- ===== CAMBIAR TÍTULO PRINCIPAL IMAGEN AQUÍ ===== -->
+                        <div class="hero-image-wrapper">
+                            <img src="https://i.imgur.com/NDSqVKl.png" alt="Eam96" class="hero-logo-img">
+                        </div>
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%;">
+                            <button class="btn-glass" id="portfolioBtn">
+                                <!-- ===== CAMBIAR TEXTO BOTÓN 1 AQUÍ ===== -->
+                                PORTAFOLIO
+                                <div class="icon-glass-fx circle" style="width: 26px; height: 26px; padding: 5px; margin-left: 8px; pointer-events: none;">
+                                    <img src="https://i.imgur.com/v1dAhMt.png" alt="Portafolio">
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ENVOLTORIO DINÁMICO: CONTENIDO ORIGINAL -->
+                    <div id="home-content" class="fade-in-section-anim" style="display: flex; flex-direction: column; gap: 40px; width: 100%;">
+                        <!-- Fila 1: Video Principal -->
+                        <div class="central-video-section">
+                            <div class="glass-card main-video-card">
+                                <div class="video-container">
+                                    <!-- ===== CAMBIAR VIDEO PRINCIPAL SUPERIOR AQUÍ (ej. video1.mp4) ===== -->
+                                    <video id="mainVideo" autoplay loop muted playsinline>
+                                        <source src="video1.mp4" type="video/mp4">
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fila 2: Quote y Video Secundario -->
+                        <div class="dual-grid">
+                            <div class="glass-card" style="padding: 30px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; min-height: 200px;">
+                                <div style="font-size: 6rem; font-weight: 900; color: rgba(255,255,255,0.05); position: absolute; top: -10px; right: 10px; pointer-events: none; font-family: var(--font-display);">”</div>
+                                <!-- ===== CAMBIAR FRASE Y AUTOR AQUÍ ===== -->
+                                <blockquote style="font-family: var(--font-body); font-size: 1.2rem; font-weight: 500; line-height: 1.6; color: #ccc; margin: 0 0 20px 0; position: relative; z-index: 1;">
+                                    “Un gran diseño no busca atención, la merece.”
+                                </blockquote>
+                                <cite style="font-size: 0.8rem; color: #fff; font-style: normal; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; align-self: flex-end; font-family: var(--font-display);">
+                                    — Dieter Rams
+                                </cite>
+                            </div>
+
+                            <div class="glass-card video-module" style="min-height: 200px;">
+                                <div class="video-container">
+                                    <!-- ===== CAMBIAR VIDEO SECUNDARIO AL LADO DE LA FRASE AQUÍ (ej. video2.mp4) ===== -->
+                                    <video autoplay loop muted playsinline>
+                                        <source src="video2.mp4" type="video/mp4">
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gallery -->
+                        <div style="margin-top: 40px; position: relative;">
+                            <!-- ===== CAMBIAR TÍTULO DE GALERÍA AQUÍ ===== -->
+                            <h3 class="metallic-text" style="margin-bottom: 20px; padding-left: 20px; font-size: 1.2rem;">DATA ARCHIVE</h3>
+                            <div class="gallery-section">
+                                <div class="carousel">
+                                    <!-- ===== CAMBIAR IMÁGENES DEL CARRUSEL 3D AQUÍ (galeria1.jpg a galeria8.jpg) ===== -->
+                                    <div class="carousel-item"><img src="galeria1.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria2.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria3.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria4.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria5.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria6.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria7.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria8.jpg" alt=""></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PLANETA SATURNO ANIMADO -->
+                        <div class="css-saturn-container">
+                            <div class="planet"><div class="rings"></div></div>
+                        </div>
+
+                        <!-- VIDEO TIPO YOUTUBE (16:9) CON CONTROLES -->
+                        <div class="central-video-section" style="margin-top: 20px;">
+                            <div class="glass-card main-video-card" style="aspect-ratio: 16/9; max-width: 800px; padding: 0; overflow: hidden;">
+                                <div class="video-container">
+                                    <!-- ===== CAMBIAR VIDEO Y MINIATURA (POSTER) INFERIOR (16:9) AQUÍ ===== -->
+                                    <video id="bottomVideo" poster="preview.jpg" playsinline preload="metadata">
+                                        <source src="video3.mp4" type="video/mp4">
+                                    </video>
+                                    <!-- Overlay Botón de Play Custom -->
+                                    <div class="custom-play-overlay" id="bottomVideoOverlay">
+                                        <div class="glass-play-btn icon-glass-fx circle" style="width: 70px; height: 70px; padding: 18px; border: none;">
+                                            <img id="videoPlayPauseIconImg" src="https://i.imgur.com/JicQWZk.png" alt="Play" style="margin-left: 4px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- CIERRE DE HOME CONTENT -->
+
+                    <!-- ENVOLTORIO DINÁMICO: NUEVA SECCIÓN DE PORTAFOLIO -->
+                    <div id="portfolio-content" style="display: none; flex-direction: column; gap: 40px; width: 100%;">
+                        
+                        <div style="display: flex; justify-content: flex-start;">
+                            <button class="btn-glass" id="backToHomeBtn" style="padding: 10px 25px; font-size: 0.8rem; box-shadow: none;">
+                                VOLVER
+                            </button>
+                        </div>
+
+                        <!-- Grid Principal de Portafolio -->
+                        <div class="portfolio-inline-grid">
+                            <!-- Tarjeta 1 -->
+                            <div class="portfolio-inline-card">
+                                <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
+                                <video class="portfolio-inline-video" muted loop playsinline>
+                                    <source src="portafolio1.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <!-- Tarjeta 2 -->
+                            <div class="portfolio-inline-card">
+                                <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
+                                <video class="portfolio-inline-video" muted loop playsinline>
+                                    <source src="portafolio2.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <!-- Tarjeta 3 -->
+                            <div class="portfolio-inline-card">
+                                <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
+                                <video class="portfolio-inline-video" muted loop playsinline>
+                                    <source src="portafolio3.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <!-- Tarjeta 4 -->
+                            <div class="portfolio-inline-card">
+                                <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
+                                <video class="portfolio-inline-video" muted loop playsinline>
+                                    <source src="portafolio4.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <!-- Tarjeta 5 -->
+                            <div class="portfolio-inline-card">
+                                <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
+                                <video class="portfolio-inline-video" muted loop playsinline>
+                                    <source src="portafolio5.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <!-- Tarjeta 6 -->
+                            <div class="portfolio-inline-card">
+                                <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
+                                <video class="portfolio-inline-video" muted loop playsinline>
+                                    <source src="portafolio6.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </div>
+
+                        <!-- Sección de Precio CORREGIDA -->
+                        <div class="glass-card" style="padding: 25px 30px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+                            <div style="flex: 1; min-width: 280px;">
+                                <p style="color: #ccc; line-height: 1.8; font-size: 0.95rem; font-family: var(--font-body); margin: 0;">
+                                    Incluye:<br>
+                                    ● Galería 4 - 6 imágenes.<br>
+                                    ● Reproductor de música 1-4 canciones.<br>
+                                    ● Entrega entre 2-3 días.<br>
+                                    ● Alojado en Github, listo para colocar en XAT.ME<br>
+                                    <span style="color: #888; font-size: 0.85rem; margin-top: 8px; display: inline-block;">El precio puede aumentar si se añaden más detalles personalizados.</span>
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 15px; align-items: center;">
+                                <img src="https://i.imgur.com/JjHxWWi.png" alt="Precio 1" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));">
+                                <img src="https://i.imgur.com/M0AKxHk.png" alt="Precio 2" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));">
+                            </div>
+                        </div>
+
+                        <!-- Sección de Tecnologías -->
+                        <div style="margin-top: 10px;">
+                            <div class="tech-carousel-container">
+                                <div class="tech-carousel">
+                                    <img src="https://i.imgur.com/DBwVsFM.png" class="tech-icon" alt="Photoshop">
+                                    <img src="https://i.imgur.com/CPbZp8p.png" class="tech-icon" alt="JavaScript">
+                                    <img src="https://i.imgur.com/xgg4Nby.png" class="tech-icon" alt="CSS">
+                                    <img src="https://i.imgur.com/qR2b6gZ.png" class="tech-icon" alt="HTML">
+                                    <img src="https://i.imgur.com/Pbya3Ju.png" class="tech-icon" alt="Corel Draw">
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- CIERRE DE PORTFOLIO CONTENT -->
+                    
+                    <!-- RENDER GIGANTE MOVIDO AL FINAL DEL CONTENT WRAPPER -->
+                    <div class="render-section" style="margin-top: 40px;">
+                        <div class="render-shadow"></div>
+                        <!-- ===== CAMBIAR IMAGEN RENDER INFERIOR GIGANTE AQUÍ ===== -->
+                        <img src="https://i.imgur.com/c7zLFeg.png" alt="Render" class="render-img" id="scrollRender" style="max-width: 100%; height: auto; display: block;">
+                    </div>
+
+                </div> <!-- CIERRE DE CONTENT WRAPPER -->
+
+            </main>
+
+            <!-- Right Panel -->
+            <aside class="right-panel">
+                
+                <!-- XAT Widget -->
+                <div class="xat-profile-widget">
+                    <div class="mini-profile-container">
+                        <div class="mini-profile-content">
+                            <!-- ===== CAMBIAR LINK DE PERFIL EAM AQUÍ ===== -->
+                            <a href="https://xat.me/EAM96" target="_blank" class="mini-profile-link" title="Perfil Eam">
+                                <img src="https://i.imgur.com/M5DW0HN.png" alt="Eam" class="mini-profile-img">
+                            </a>
+                            <div class="mp-main-info">
+                                <div class="mp-line1">
+                                    <img src="https://i.ibb.co/twF8FxpF/a-p1classic-ffff00-frnt1-w16-141736-hat3-w0i1316662ic-20.webp" alt="Pawn" class="mp-pawn-icon">
+                                    <!-- ===== CAMBIAR NOMBRE AQUÍ (Eam) ===== -->
+                                    <span class="mp-name-eam silver-text"> : ̗̀𝑬𝒂𝒎⁹⁶</span>
+                                </div>
+                                <div class="mp-line2">𝙭𝙖𝙩𝙨𝙥aks 𝙨𝙚𝙡𝙡𝙚𝙧</div>
+                            </div>
+                            <div class="mp-status" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span class="status-dot"></span>
+                                    <span class="status-text">En línea</span>
+                                </div>
+                                <div style="padding-left: 12px; margin-top: 2px;">
+                                    <div class="icon-glass-fx rounded" style="width: 26px; height: 26px; padding: 4px;">
+                                        <img src="https://i.imgur.com/0RAYaaq.png" style="display: block;" alt="Libra">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Music Player -->
+                <div class="glass-card music-player overflow-visible">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
+                        <div class="icon-glass-fx circle" style="width: 44px; height: 44px; padding: 10px; flex-shrink: 0;">
+                            <img src="https://i.imgur.com/ytWuT1R.png" alt="Música">
+                        </div>
+                        <div class="song-info" style="margin-bottom: 0;">
+                            <h3 id="trackName" style="margin-bottom: 2px;">Cargando...</h3>
+                            <p id="trackArtist" style="margin-bottom: 0;">---</p>
+                        </div>
+                    </div>
+                    <div class="equalizer-container" id="equalizer">
+                        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                    </div>
+                    <div class="progress-container" id="progressBarContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    
+                    <div class="controls">
+                        <div class="ctrl-group">
+                            <button class="ctrl-btn icon-glass-fx circle" id="prevBtn" style="width: 38px; height: 38px; padding: 8px; border: none; outline: none; background: transparent; color: #fff;">
+                                <svg width="100%" height="100%" viewBox="0 0 24 24" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line></svg>
+                            </button>
+                            <button class="ctrl-btn play-btn icon-glass-fx circle" id="playBtn" style="width: 48px; height: 48px; padding: 12px; border: none; outline: none; background: transparent;">
+                                <img id="playPauseIconImg" src="https://i.imgur.com/JicQWZk.png" style="display: block; width: 100%; height: 100%; object-fit: contain;" alt="Play/Pause">
+                            </button>
+                            <button class="ctrl-btn icon-glass-fx circle" id="nextBtn" style="width: 38px; height: 38px; padding: 8px; border: none; outline: none; background: transparent; color: #fff;">
+                                <svg width="100%" height="100%" viewBox="0 0 24 24" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line></svg>
+                            </button>
+                        </div>
+                        <div class="vol-control">
+                            <div class="icon-glass-fx vol-control-fx circle" style="width: 34px; height: 34px; padding: 7px; flex-shrink: 0;">
+                                <img id="volHighIcon" src="https://i.imgur.com/7oqrSKd.png" style="display: block;" alt="Vol High">
+                                <img id="volLowIcon" src="https://i.imgur.com/XWcYbu4.png" style="display: none;" alt="Vol Low">
+                                <img id="volMuteIcon" src="https://i.imgur.com/S8bwvKp.png" style="display: none;" alt="Mute">
+                            </div>
+                            <input type="range" id="volSlider" class="vol-slider" min="0" max="1" step="0.05" value="1">
+                        </div>
+                    </div>
+                    <audio id="audioPlayer"></audio>
+                </div>
+
+                <!-- TIME & DATE MODULE -->
+                <div class="glass-card time-date-module overflow-visible">
+                    <!-- REAL TIME CLOCK -->
+                    <div class="time-row">
+                        <div>
+                            <div class="stat-value" id="realTimeClock">00:00:00</div>
+                            <div class="stat-label">Local Time</div>
+                        </div>
+                        <div class="icon-glass-fx rounded" style="width: 42px; height: 42px; padding: 8px;">
+                            <img src="https://i.imgur.com/AAvLtm5.png" alt="Reloj">
+                        </div>
+                    </div>
+                    
+                    <!-- CALENDARIO FIJO QUE ABRE POPUP -->
+                    <div class="calendar-card" id="calendarWidget" style="width: 100%;">
+                        <!-- Parte Fija -->
+                        <div class="calendar-header" id="calHeaderBtn" style="cursor: pointer; width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div class="stat-value" id="cal-short-date">-- ---</div>
+                                <div class="stat-label" id="cal-day-year">--- ----</div>
+                            </div>
+                            <div class="icon-glass-fx rounded" style="width: 42px; height: 42px; padding: 8px;">
+                                <img src="https://i.imgur.com/JItsq0c.png" alt="Calendario">
+                            </div>
+                        </div>
+                        
+                        <!-- Popup Desplegable Estilo Windows -->
+                        <div class="calendar-popup" id="calPopup">
+                            <div class="cal-nav">
+                                <button id="calPrevBtn">&lt;</button>
+                                <div id="calMonthYear">MES AÑO</div>
+                                <button id="calNextBtn">&gt;</button>
+                            </div>
+                            <div class="cal-grid-header">
+                                <div>Do</div><div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sa</div>
+                            </div>
+                            <div class="cal-grid-days" id="calGridDays">
+                                <!-- JS inyecta dias aqui -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- LANDING SCREEN Y DESBLOQUEO iOS ---
+        const landingScreen = document.getElementById('landing-screen');
+        const startBtn = document.getElementById('start-btn');
+        const mainApp = document.getElementById('main-app');
+        const audio = document.getElementById('audioPlayer');
+        const mainVideo = document.getElementById('mainVideo');
+
+        startBtn.addEventListener('click', function(e) {
+            landingScreen.classList.add('hidden');
+            
+            // Iniciar reproducción directamente atada al click del usuario (políticas del navegador)
+            if (audio) {
+                audio.play().then(() => {
+                    // Sincronizar icono a PAUSE tras iniciar reproducción
+                    const icon = document.getElementById('playPauseIconImg');
+                    if (icon) {
+                        icon.src = "https://i.imgur.com/RwudMq8.png";
+                    }
+                }).catch(() => {});
+            }
+
+            if (mainVideo) {
+                mainVideo.play().catch(() => {});
+            }
+            
+            // Mostrar la app principal con la transición intacta
+            setTimeout(() => {
+                mainApp.classList.add('visible');
+            }, 800);
+        });
+
+        // --- PARTICLES ---
+        const canvas = document.getElementById('particles-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let width, height, particles = [];
+
+            function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+            window.addEventListener('resize', resize); resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width; this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.3; this.vy = (Math.random() - 0.5) * 0.3;
+                    this.size = Math.random() * 2;
+                }
+                update() {
+                    this.x += this.vx; this.y += this.vy;
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+                }
+                draw() {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                }
+            }
+            for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update(); particles[i].draw();
+                    for (let j = i; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 100) {
+                            ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 - dist/1000})`;
+                            ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        }
+
+        // --- APP LOGIC (Forzar Auto-Play de videos locales, seguro para Safari) ---
+        document.querySelectorAll('video:not([controls])').forEach(vid => {
+            vid.muted = true;
+            vid.playsInline = true;
+            let playPromise = vid.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    vid.muted = true;
+                    vid.play().catch(e => console.log("Video autoplay prevented"));
+                });
+            }
+        });
+
+        // --- LÓGICA DE ICONOS DINÁMICOS (PLAY/PAUSE) ---
+        const ICON_PLAY = 'https://i.imgur.com/JicQWZk.png';
+        const ICON_PAUSE = 'https://i.imgur.com/RwudMq8.png';
+
+        // 1. REPRODUCTOR DE MÚSICA
+        const playBtn = document.getElementById('playBtn');
+        const playPauseIconImg = document.getElementById('playPauseIconImg');
+        const progressBar = document.getElementById('progressBar');
+        const trackName = document.getElementById('trackName');
+        const trackArtist = document.getElementById('trackArtist');
+        const eqBars = document.querySelectorAll('.eq-bar');
+        const volSlider = document.getElementById('volSlider');
+
+        // Event listeners nativos del audio para actualizar el icono siempre
+        if(audio) {
+            audio.addEventListener('play', () => {
+                if(playPauseIconImg) playPauseIconImg.src = ICON_PAUSE;
+                startEQ();
+            });
+            audio.addEventListener('pause', () => {
+                if(playPauseIconImg) playPauseIconImg.src = ICON_PLAY;
+                stopEQ();
+            });
+        }
+
+        // 2. REPRODUCTOR DE VIDEO INFERIOR INTERACTIVO
+        const bottomVideo = document.getElementById('bottomVideo');
+        const bottomVideoOverlay = document.getElementById('bottomVideoOverlay');
+        const videoPlayPauseIconImg = document.getElementById('videoPlayPauseIconImg');
+
+        // Event listeners nativos del video para actualizar el icono siempre
+        if(bottomVideo) {
+            bottomVideo.addEventListener('play', () => {
+                if(videoPlayPauseIconImg) videoPlayPauseIconImg.src = ICON_PAUSE;
+            });
+            bottomVideo.addEventListener('pause', () => {
+                if(videoPlayPauseIconImg) videoPlayPauseIconImg.src = ICON_PLAY;
+            });
+        }
+
+        if(bottomVideo && bottomVideoOverlay) {
+            bottomVideoOverlay.addEventListener('click', () => {
+                if (bottomVideo.paused) {
+                    let p = bottomVideo.play();
+                    if (p !== undefined) p.catch(e => console.log("Bottom video error:", e));
+                } else {
+                    bottomVideo.pause();
+                }
+            });
+        }
+
+        // --- LIGHTBOX LINKS ---
+        const lightbox = document.getElementById('lightbox'), lightboxImg = lightbox.querySelector('img'), lightboxClose = lightbox.querySelector('.lightbox-close');
+        document.querySelectorAll('.carousel-item').forEach(item => {
+            item.addEventListener('click', () => { lightboxImg.src = item.querySelector('img').src; lightbox.classList.add('active'); });
+        });
+        if(lightboxClose) lightboxClose.addEventListener('click', () => lightbox.classList.remove('active'));
+        if(lightbox) lightbox.addEventListener('click', (e) => { if(e.target === lightbox) lightbox.classList.remove('active'); });
+
+        // --- NAVEGACIÓN DINÁMICA: HOME Y PORTAFOLIO IN-PLACE ---
+        const homeBtn = document.getElementById('homeBtn');
+        const portfolioBtn = document.getElementById('portfolioBtn');
+        const homeContent = document.getElementById('home-content');
+        const portfolioContent = document.getElementById('portfolio-content');
+        const backToHomeBtn = document.getElementById('backToHomeBtn');
+
+        if(homeBtn && homeContent && portfolioContent) {
+            homeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                portfolioContent.style.display = 'none';
+                portfolioContent.classList.remove('fade-in-section-anim');
+                
+                homeContent.style.display = 'flex';
+                homeContent.classList.add('fade-in-section-anim');
+                
+                // Update active state on sidebar
+                document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
+                homeBtn.classList.add('active');
+
+                const mainCanvas = document.querySelector('.main-canvas');
+                if(mainCanvas) mainCanvas.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+
+        if(portfolioBtn && homeContent && portfolioContent) {
+            portfolioBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                homeContent.style.display = 'none';
+                homeContent.classList.remove('fade-in-section-anim');
+                
+                portfolioContent.style.display = 'flex';
+                portfolioContent.classList.add('fade-in-section-anim');
+                
+                // Remove active state from sidebar
+                document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
+
+                const mainCanvas = document.querySelector('.main-canvas');
+                if(mainCanvas) mainCanvas.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+
+        if(backToHomeBtn && homeContent && portfolioContent) {
+            backToHomeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                portfolioContent.style.display = 'none';
+                portfolioContent.classList.remove('fade-in-section-anim');
+                
+                homeContent.style.display = 'flex';
+                homeContent.classList.add('fade-in-section-anim');
+                
+                // Restore active state to Home
+                if(homeBtn) {
+                    document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
+                    homeBtn.classList.add('active');
+                }
+
+                const mainCanvas = document.querySelector('.main-canvas');
+                if(mainCanvas) mainCanvas.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+
+        // Lógica de Play/Pause automático al pasar el ratón en la nueva galería Portafolio
+        document.querySelectorAll('.portfolio-inline-card').forEach(card => {
+            const vid = card.querySelector('video');
+            if(vid) {
+                card.addEventListener('mouseenter', () => {
+                    let playPromise = vid.play();
+                    if(playPromise !== undefined) playPromise.catch(e => console.log("Hover play prevented"));
+                });
+                card.addEventListener('mouseleave', () => {
+                    vid.pause();
+                    vid.currentTime = 0; // Reset al salir
+                });
+            }
+        });
+
+        const findMeBtn = document.getElementById('findMeBtn');
+        if(findMeBtn) {
+            findMeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // ===== CAMBIAR ENLACE AQUÍ (Botón Encuéntrame) =====
+                window.open('https://xat.me/EAM96', '_blank');
+            });
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth - e.pageX) / 80; const y = (window.innerHeight - e.pageY) / 80;
+            document.querySelectorAll('.glass-card:not(.calendar-popup)').forEach(card => card.style.transform = `translateX(${x}px) translateY(${y}px)`);
+        });
+
+        // --- MUSIC PLAYER LISTA & CONTROLES ---
+        // ===== CAMBIAR NOMBRES DE CANCIONES AQUÍ (Archivos locales .mp3) =====
+        const playlist = [
+            { title: "Wake up", artist: "The Weeknd", src: "song1.mp3" },
+            { title: "Take me back to LA", artist: "The Weeknd", src: "song2.mp3" },
+            { title: "Drive", artist: "The Weeknd", src: "song3.mp3" },
+            { title: "Seven", artist: "Jungkook", src: "song4.mp3" },
+            { title: "Standing Next To You Ft. Usher", artist: "Jungkook", src: "song5.mp3" },
+            { title: "Luther", artist: "Kendrick Lamar", src: "song6.mp3" },
+            { title: "Rockstar", artist: "Post Malone", src: "song7.mp3" },
+            { title: "Kpop", artist: "Travis Scott", src: "song8.mp3" }
+        ];
+
+        let currentSongIndex = 0;
+
+        function loadSong(song) {
+            trackName.textContent = song.title; trackArtist.textContent = song.artist; 
+            if(audio) {
+                audio.src = song.src;
+                // Si la música estaba sonando, que siga sonando al cambiar
+                if (!audio.paused) {
+                    audio.play().catch(e => console.log("Autoplay prevented on load"));
+                }
+            }
+        }
+
+        function playPause() {
+            if (audio && audio.paused) {
+                let p = audio.play();
+                if (p !== undefined) p.catch(() => console.log("Play prevented"));
+            } else if (audio) {
+                audio.pause(); 
+            }
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length; loadSong(playlist[currentSongIndex]);
+            if(audio) {
+                let p = audio.play();
+                if (p !== undefined) p.catch(() => console.log("Play prevented"));
+            }
+        });
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length; loadSong(playlist[currentSongIndex]);
+            if(audio) {
+                let p = audio.play();
+                if (p !== undefined) p.catch(() => console.log("Play prevented"));
+            }
+        });
+        if(volSlider) volSlider.addEventListener('input', (e) => { if(audio) audio.volume = e.target.value; });
+
+        if(playBtn) playBtn.addEventListener('click', playPause);
+        if(audio) {
+            audio.addEventListener('timeupdate', () => { const progress = (audio.currentTime / audio.duration) * 100; progressBar.style.width = `${progress}%`; });
+            audio.addEventListener('ended', () => { document.getElementById('nextBtn').click(); }); // Auto Next
+        }
+
+        // Ecualizador simulado robusto (Funciona local 100%)
+        let eqInterval;
+        function startEQ() {
+            if(eqInterval) clearInterval(eqInterval);
+            eqBars.forEach(bar => bar.classList.remove('paused'));
+            eqInterval = setInterval(() => {
+                eqBars.forEach(bar => { bar.style.height = (Math.random() * 70 + 20) + '%'; });
+            }, 150);
+        }
+        function stopEQ() {
+            if(eqInterval) clearInterval(eqInterval);
+            eqBars.forEach(bar => { bar.style.height = '10%'; bar.classList.add('paused'); });
+        }
+
+        stopEQ(); // Estado inicial visual
+        loadSong(playlist[0]);
+
+        // Hearts Logic
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.widget-heart-trigger')) {
+                const x = e.clientX, y = e.clientY;
+                for(let i=0; i<10; i++) {
+                    const heart = document.createElement('div'); heart.classList.add('widget-heart-particle'); heart.innerHTML = '❤️';
+                    heart.style.left = (x + (Math.random() - 0.5) * 50) + 'px'; heart.style.top = (y + (Math.random() - 0.5) * 50) + 'px';
+                    document.body.appendChild(heart); setTimeout(() => heart.remove(), 1500);
+                }
+            }
+        });
+
+        // ------------------------------------------------------------------
+        // DOWNLOADS MODAL LOGIC (Pstyle Gallery)
+        // ------------------------------------------------------------------
+        const folderBtn = document.getElementById('folderBtn'), downloadsModal = document.getElementById('downloadsModal');
+
+        // Pstyle dummy URLs for gallery
+        const pstyleImages = [
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png"
+        ];
+
+        if(folderBtn && downloadsModal) {
+            folderBtn.addEventListener('click', () => {
+                const grid = document.getElementById('downloadsGrid'); 
+                if(grid) {
+                    grid.innerHTML = '';
+                    pstyleImages.forEach((imgUrl, index) => {
+                        grid.innerHTML += `
+                        <div class="download-item">
+                            <img src="${imgUrl}" class="download-thumb" alt="Pstyle Preview">
+                            <div class="download-btn-overlay" style="justify-content: space-between;">
+                                <span class="copy-feedback" style="opacity: 0; color: #fff; font-size: 0.75rem; font-weight: bold; font-family: var(--font-body); transition: opacity 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none;">Copiado</span>
+                                <button class="copy-url-btn icon-glass-fx circle" data-url="${imgUrl}" style="width: 36px; height: 36px; padding: 6px; border: none; background: transparent;" title="Copiar URL">
+                                    <img src="https://i.imgur.com/tPZigqF.png" style="width: 100%; height: 100%; object-fit: contain;" alt="Copiar">
+                                </button>
+                            </div>
+                        </div>`;
+                    });
+                }
+                downloadsModal.classList.add('active');
+            });
+        }
+
+        // Delegate copy and preview events
+        const downloadsGrid = document.getElementById('downloadsGrid');
+        if (downloadsGrid) {
+            downloadsGrid.addEventListener('click', (e) => {
+                const thumb = e.target.closest('.download-thumb');
+                const btn = e.target.closest('.copy-url-btn');
+                
+                // Handle Preview
+                if (thumb) {
+                    lightboxImg.src = thumb.src;
+                    lightbox.classList.add('active');
+                    return; // Prevent triggering anything else
+                }
+
+                // Handle Copy URL
+                if (btn) {
+                    const url = btn.getAttribute('data-url');
+                    
+                    // Copy to clipboard (iframe compatible fallback)
+                    const textArea = document.createElement("textarea");
+                    textArea.value = url;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        
+                        // Visual feedback "Copiado"
+                        const feedbackEl = btn.parentElement.querySelector('.copy-feedback');
+                        if(feedbackEl) {
+                            feedbackEl.style.opacity = '1';
+                            setTimeout(() => { feedbackEl.style.opacity = '0'; }, 1800);
+                        }
+                        
+                    } catch (err) {
+                        console.error('Copy failed', err);
+                    }
+                    document.body.removeChild(textArea);
+                }
+            });
+        }
+        
+        const closeDownloadsModal = document.getElementById('closeDownloadsModal');
+        if(closeDownloadsModal && downloadsModal) {
+            closeDownloadsModal.addEventListener('click', () => downloadsModal.classList.remove('active'));
+        }
+        
+        window.addEventListener('click', (e) => {
+            if(downloadsModal && e.target === downloadsModal) downloadsModal.classList.remove('active');
+        });
+
+        // --- SCROLL REVEAL (Safe for older Safari) ---
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('reveal-active'); }); }, { threshold: 0.1 });
+            const renderImg = document.getElementById('scrollRender'); 
+            if(renderImg) observer.observe(renderImg);
+        } else {
+            const renderImg = document.getElementById('scrollRender'); 
+            if(renderImg) renderImg.classList.add('reveal-active');
+        }
+
+        // --- CALENDARIO ESTILO WINDOWS ---
+        function updateFixedDate() {
+            const now = new Date();
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            
+            const shortDateEl = document.getElementById('cal-short-date');
+            if (shortDateEl) shortDateEl.textContent = `${now.getDate()} ${months[now.getMonth()]}`;
+            
+            const dayYearEl = document.getElementById('cal-day-year');
+            if (dayYearEl) dayYearEl.textContent = `${days[now.getDay()]}, ${now.getFullYear()}`;
+        }
+        
+        let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
+        const calPopup = document.getElementById('calPopup');
+        
+        const calHeaderBtn = document.getElementById('calHeaderBtn');
+        if(calHeaderBtn && calPopup) {
+            calHeaderBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                calPopup.classList.toggle('open');
+                if(calPopup.classList.contains('open')) renderMonth(calMonth, calYear);
+            });
+        }
+        
+        if(calPopup) {
+            calPopup.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+
+        window.addEventListener('click', (e) => {
+            if (calPopup && calPopup.classList.contains('open')) {
+                calPopup.classList.remove('open');
+            }
+        });
+
+        function renderMonth(month, year) {
+            const grid = document.getElementById('calGridDays'); 
+            if(!grid) return;
+            grid.innerHTML = '';
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const monthNamesFull = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            
+            const monthYearEl = document.getElementById('calMonthYear');
+            if(monthYearEl) monthYearEl.textContent = `${monthNamesFull[month]} ${year}`;
+
+            for(let i=0; i < firstDay; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
+            const today = new Date();
+            for(let i=1; i <= daysInMonth; i++) {
+                let isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear());
+                grid.innerHTML += `<div class="cal-day ${isToday ? 'today' : ''}">${i}</div>`;
+            }
+        }
+        
+        const prevBtn = document.getElementById('calPrevBtn');
+        if(prevBtn) {
+            prevBtn.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                calMonth--; 
+                if(calMonth < 0) { calMonth = 11; calYear--; } 
+                renderMonth(calMonth, calYear); 
+            });
+        }
+        
+        const nextBtn = document.getElementById('calNextBtn');
+        if(nextBtn) {
+            nextBtn.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                calMonth++; 
+                if(calMonth > 11) { calMonth = 0; calYear++; } 
+                renderMonth(calMonth, calYear); 
+            });
+        }
+
+        setInterval(updateFixedDate, 60000); 
+        updateFixedDate();
+
+        // --- REAL TIME CLOCK ---
+        function updateClock() {
+            const now = new Date();
+            const clockEl = document.getElementById('realTimeClock');
+            if (clockEl) {
+                clockEl.textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+            }
+        }
+        setInterval(updateClock, 1000); 
+        updateClock();
+
+        // --- PROTECCIÓN BÁSICA DEL CÓDIGO ---
+        // 1. Deshabilitar clic derecho (Context Menu)
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // 2. Bloquear atajos de teclado (F12, Ctrl+Shift+I, Ctrl+U)
+        document.addEventListener('keydown', function(e) {
+            // Bloquear F12
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            // Bloquear Ctrl + Shift + I
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
+                e.preventDefault();
+                return false;
+            }
+            // Bloquear Ctrl + U
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // --- LÓGICA VISUAL DE ICONOS DE VOLUMEN ---
+        const volSliderEl = document.getElementById('volSlider');
+        if(volSliderEl) {
+            volSliderEl.addEventListener('input', (e) => {
+                const v = parseFloat(e.target.value);
+                const volHigh = document.getElementById('volHighIcon');
+                const volLow = document.getElementById('volLowIcon');
+                const volMute = document.getElementById('volMuteIcon');
+                if (volHigh && volLow && volMute) {
+                    if(v === 0) { 
+                        volMute.style.display = 'block'; 
+                        volLow.style.display = 'none'; 
+                        volHigh.style.display = 'none'; 
+                    } else if(v < 0.5) { 
+                        volMute.style.display = 'none'; 
+                        volLow.style.display = 'block'; 
+                        volHigh.style.display = 'none'; 
+                    } else { 
+                        volMute.style.display = 'none'; 
+                        volLow.style.display = 'none'; 
+                        volHigh.style.display = 'block'; 
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
