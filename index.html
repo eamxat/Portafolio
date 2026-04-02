@@ -46,7 +46,7 @@
         a, button, [role="button"], input[type="button"], input[type="submit"], input[type="range"], label, .clickable,
         .window-dot, #start-btn, .brand-icon, .nav-item, .btn-glass, .progress-container, .ctrl-btn, .render-img, 
         .calendar-card, .css-saturn-container, .portfolio-card, .dl-icon, .icon-glass-fx, .custom-play-overlay, 
-        .carousel-item, #calHeaderBtn, .portfolio-inline-card, .tech-icon, .copy-url-btn, .download-thumb {
+        .carousel-item, #calHeaderBtn, .portfolio-inline-card, .tech-icon, .copy-url-btn, .download-thumb, .pcback-thumb {
             cursor: url('https://cdn.cursors-4u.net/previews/oxygen-chrome-hand-68e4ac8c-32.png') 20 20, pointer;
         }
 
@@ -275,7 +275,7 @@
         .layout-container { display: grid; grid-template-columns: 80px 1fr 320px; height: calc(100vh - 65px); height: calc(100dvh - 65px); width: 100%; }
 
         /* Sidebar */
-        .sidebar { display: flex; flex-direction: column; align-items: center; padding-top: 40px; border-right: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); z-index: 10; }
+        .sidebar { display: flex; flex-direction: column; align-items: center; border-right: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); z-index: 10; }
         .brand-icon { width: 50px; height: 50px; border-radius: 50%; margin-bottom: 60px; display: grid; place-items: center; overflow: hidden; box-shadow: 0 0 15px rgba(255,255,255,0.4); border: 2px solid rgba(255,255,255,0.2); transition: all 0.3s ease; cursor: pointer; }
         .brand-icon:hover { width: 80px; height: 80px; }
         .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
@@ -288,7 +288,6 @@
         .content-wrapper { width: 100%; max-width: 1600px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; position: relative; z-index: 1; }
 
         /* Right Panel */
-        /* Ajuste de márgenes/paddings corregidos para un ensamble sin desbordes */
         .right-panel { padding: 0 30px 30px 30px; display: flex; flex-direction: column; gap: 24px; border-left: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.4); backdrop-filter: blur(25px); z-index: 10; overflow-y: auto; margin-top: 0; }
 
         /* Glass Cards */
@@ -412,7 +411,7 @@
         }
 
         /* --- COMPONENTS --- */
-        .portfolio-hero-clean { padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 150px; text-align: center; margin-bottom: 20px; }
+        .portfolio-hero-clean { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 150px; text-align: center; margin-bottom: 20px; }
         .btn-glass {
             padding: 18px 45px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px;
             color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 1rem; letter-spacing: 2px;
@@ -654,6 +653,12 @@
         .dl-icon { color: white; cursor: pointer; transition: 0.2s; }
         .dl-icon:hover { transform: scale(1.2); text-shadow: 0 0 10px #fff; }
 
+        /* --- PCBACK GRATUITOS MODAL --- */
+        .pcback-grid-container { display: grid; grid-template-columns: repeat(auto-fill, 204px); justify-content: center; gap: 20px; }
+        .pcback-item { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); transition: 0.3s; background: #000; width: 204px; height: 207px; }
+        .pcback-item:hover { border-color: #fff; transform: translateY(-5px); box-shadow: 0 5px 20px rgba(255,255,255,0.1); }
+        .pcback-thumb { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; cursor: pointer; }
+
         /* --- ESTILOS NUEVOS: LOGO ANIMADO Y GALERÍA PORTAFOLIO --- */
         .hero-image-wrapper {
             position: relative;
@@ -785,8 +790,10 @@
             }
         }
 
-        /* XAT WIDGET */
-        /* OBJETIVO 1: Eliminar hueco de 17px arriba del avatar y texto, y OBJETIVO 3: Avatar sin cortes */
+        /* --- XAT WIDGET: Corrección 1 (Hueco de 17px) y Corrección 3 (Corte del Avatar) --- */
+        .xat-profile-widget { --mp-img-size: 46px; --mp-pawn-w: 30px; --mp-pawn-h: 30px; --mp-name-size: 1rem; --mp-sub-size: 0.7rem; font-family: var(--font-body); display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; width: fit-content; }
+        .mini-profile-container { display: flex; justify-content: center; width: auto; }
+        
         .xat-profile-widget, 
         .mini-profile-container, 
         .mini-profile-content, 
@@ -801,52 +808,41 @@
         }
         
         .mp-name-eam {
-            line-height: 1 !important; /* Elimina espacio residual de fuente */
+            line-height: 1 !important; /* Elimina espacio residual de fuente que empujaba hacia abajo */
         }
         
-        .xat-profile-widget { --mp-img-size: 46px; --mp-pawn-w: 30px; --mp-pawn-h: 30px; --mp-name-size: 1rem; --mp-sub-size: 0.7rem; font-family: var(--font-body); display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; width: fit-content; }
-        .mini-profile-container { display: flex; justify-content: center; width: auto; }
         .mini-profile-content { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto; column-gap: 12px; align-items: start; color: #e0e0e0; }
-        .mini-profile-link { grid-column: 1; grid-row: 1 / 3; align-self: center; transition: transform 0.2s; display: block; text-decoration: none; position: relative; }
         
-        /* Modificación: Avatar inicial en Blanco y Negro (Sin Glow) */
+        /* La estructura del avatar limpia (recorte real en el contenedor) */
+        .mini-profile-link { 
+            grid-column: 1; 
+            grid-row: 1 / 3; 
+            align-self: center; 
+            display: block; 
+            text-decoration: none; 
+            position: relative; 
+            width: var(--mp-img-size); 
+            height: var(--mp-img-size); 
+            aspect-ratio: 1 / 1; 
+            border-radius: 50%; 
+            overflow: hidden !important; /* CRÍTICO: Esto anula cualquier overflow: visible y corta la imagen forzosamente */
+        }
+        
         .mini-profile-img { 
-            width: var(--mp-img-size); height: var(--mp-img-size); border-radius: 50%; object-fit: cover; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+            border-radius: 50%; 
             border: 2px solid rgba(255,255,255,0.2); 
-            transition: 0.4s ease; position: relative; 
+            transition: filter 0.4s ease; 
             filter: grayscale(100%); 
         }
-        
+
         @media (hover: hover) {
-            /* Modificación: Recuperar color al hacer hover (Sin Glow) */
-            .mini-profile-img:hover { 
-                transform: scale(1.74); border-color: #fff; z-index: 10; 
+            .mini-profile-link:hover .mini-profile-img { 
                 filter: grayscale(0%); 
             }
-        }
-
-        /* --- NUEVO: Efecto Shine para el Avatar (idéntico a Portafolio) --- */
-        .mini-profile-link::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: var(--mp-img-size);
-            height: var(--mp-img-size);
-            border-radius: 50%;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-            background-size: 250% 100%;
-            background-position: -200% 0;
-            pointer-events: none;
-            transition: transform 0.4s ease; /* Sincronizado con la transición de la imagen */
-            z-index: 20;
-        }
-        .mini-profile-link:hover::after {
-            transform: scale(1.74); /* Mismo escalado que el avatar para encajar perfecto */
-            animation: avatarShineSweep 0.5s ease-out forwards;
-        }
-        @keyframes avatarShineSweep {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
         }
 
         .mp-main-info { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; justify-content: center; line-height: 1.1; }
@@ -957,7 +953,7 @@
 
         /* --- CORRECCIONES RESPONSIVE MÓVIL (CRÍTICO) --- */
         @media (max-width: 768px) {
-            /* OBJETIVO 1: Eliminar glow del footer en móvil */
+            /* Eliminar glow del footer en móvil */
             .render-shadow {
                 display: none !important;
                 box-shadow: none !important;
@@ -967,7 +963,7 @@
                 filter: none !important;
             }
 
-            /* OBJETIVO 2: Icono "?" (y demás) alineados correctamente */
+            /* Icono "?" (y demás) alineados correctamente */
             .sidebar .nav-item {
                 margin: 0 !important;
                 display: flex !important;
@@ -975,7 +971,7 @@
                 justify-content: center !important;
             }
 
-            /* OBJETIVO 3: Calendario funcional y encima de todo sin mover su lugar base */
+            /* Calendario funcional y encima de todo sin mover su lugar base */
             .calendar-card {
                 position: relative !important;
                 z-index: 9999 !important;
@@ -993,7 +989,7 @@
             }
         }
         
-        /* ESTILO NUEVO GRADIENTE DEBAJO DEL RENDER (FOOTER) */
+        /* ESTILO NUEVO GRADIENTE DEBAJO DEL RENDER (FOOTER) - OBJETIVO 5 */
         .footer-render-wrapper {
             position: relative;
             display: flex;
@@ -1011,6 +1007,57 @@
             background: linear-gradient(to top, #000000 0%, transparent 100%);
             pointer-events: none;
             z-index: 5;
+        }
+
+        /* --- BANNERS PORTAFOLIO --- */
+        .portfolio-banners-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+            width: 100%;
+        }
+        .portfolio-banner-link {
+            display: block;
+            width: 100%;
+            max-width: 448px;
+            height: 98px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0;
+        }
+        .portfolio-banner-link:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .portfolio-banner-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* =========================================
+           CORRECCIONES FINALES (HUECO Y ZOOM AVATAR)
+           ========================================= */
+        /* Eliminar hueco superior desplazando los contenedores hacia arriba (margin negativo).
+           Mantenemos el padding intacto para que el avatar tenga espacio para escalar sin cortarse. */
+        .sidebar {
+            margin-top: -40px !important;
+            padding-top: 40px !important;
+        }
+        .main-canvas {
+            margin-top: -40px !important;
+            padding-top: 40px !important;
+        }
+        .right-panel {
+            margin-top: -30px !important;
+            padding-top: 30px !important;
         }
 
     </style>
@@ -1089,6 +1136,19 @@
             </div>
         </div>
 
+        <!-- Modal PCBACK GRATUITOS -->
+        <div id="pcbackModal" class="modal">
+            <div class="glass-card modal-content">
+                <div style="display: flex; justify-content: flex-start; margin-bottom: 20px;">
+                    <button class="btn-glass" id="backFromPcbackBtn" style="padding: 10px 25px; font-size: 0.8rem; box-shadow: none;">
+                        VOLVER
+                    </button>
+                </div>
+                <h2 class="metallic-text" style="font-size: 2rem; margin-bottom: 30px;">PCBACK GRATUITOS</h2>
+                <div class="pcback-grid-container" id="pcbackGrid"></div>
+            </div>
+        </div>
+
         <div class="layout-container">
             <!-- Sidebar / Navegación Inferior en Móviles -->
             <nav class="sidebar glass">
@@ -1106,6 +1166,12 @@
                 <div class="nav-item" id="folderBtn" title="Archivos">
                     <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
                         <img src="https://i.imgur.com/v1dAhMt.png" alt="Archivos">
+                    </div>
+                </div>
+                
+                <div class="nav-item" id="pcbackBtn" title="PCback Gratuitos">
+                    <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
+                        <img src="https://i.imgur.com/v1dAhMt.png" alt="PCback Gratuitos">
                     </div>
                 </div>
                 
@@ -1225,6 +1291,12 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- NUEVO RENDER FOOTER MOVÍDO EXCLUSIVAMENTE AL INICIO -->
+                        <div class="footer-render-wrapper">
+                            <img src="https://i.imgur.com/c7zLFeg.png" alt="Render Footer" style="max-width: 100%; height: auto; object-fit: contain; display: block;">
+                        </div>
+
                     </div> <!-- CIERRE DE HOME CONTENT -->
 
                     <!-- ENVOLTORIO DINÁMICO: NUEVA SECCIÓN DE PORTAFOLIO -->
@@ -1312,14 +1384,26 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- NUEVO: BANNERS PORTAFOLIO CLICKEABLES -->
+                        <div class="portfolio-banners-container">
+                            <a href="https://eamxat.github.io/GeneradorXATFrame/" target="_blank" class="portfolio-banner-link">
+                                <img src="https://i.imgur.com/kjISz8x.png" alt="Generador XatFrame">
+                            </a>
+                            <a href="https://cropperxat.github.io/tool/" target="_blank" class="portfolio-banner-link">
+                                <img src="https://i.imgur.com/JO57UWr.png" alt="Cropper Xat">
+                            </a>
+                            <a href="https://xat.com/Ayuda" target="_blank" class="portfolio-banner-link">
+                                <img src="https://i.imgur.com/SlHBK6O.png" alt="Ayuda Xat">
+                            </a>
+                            <a href="https://eamxat.github.io/XatRPS/" target="_blank" class="portfolio-banner-link">
+                                <img src="https://i.imgur.com/NrCxA5E.png" alt="Xat RPS">
+                            </a>
+                        </div>
+
                     </div> <!-- CIERRE DE PORTFOLIO CONTENT -->
 
                 </div> <!-- CIERRE DE CONTENT WRAPPER -->
-                
-                <!-- NUEVO RENDER FOOTER DE PRUEBA -->
-                <div class="footer-render-wrapper">
-                    <img src="https://i.imgur.com/c7zLFeg.png" alt="Render Footer" style="max-width: 100%; height: auto; object-fit: contain; display: block;">
-                </div>
 
             </main>
 
@@ -1347,9 +1431,12 @@
                                     <span class="status-dot"></span>
                                     <span class="status-text">En línea</span>
                                 </div>
-                                <div style="padding-left: 12px; margin-top: 2px;">
+                                <div style="padding-left: 12px; margin-top: 2px; display: flex; gap: 6px;">
                                     <div class="icon-glass-fx rounded" style="width: 26px; height: 26px; padding: 4px;">
                                         <img src="https://i.imgur.com/0RAYaaq.png" style="display: block;" alt="Libra">
+                                    </div>
+                                    <div class="icon-glass-fx rounded" style="width: 26px; height: 26px; padding: 4px;">
+                                        <img src="https://i.imgur.com/LY93xD9.png" style="display: block;" alt="Bandera">
                                     </div>
                                 </div>
                             </div>
@@ -1901,6 +1988,112 @@
         
         window.addEventListener('click', (e) => {
             if(downloadsModal && e.target === downloadsModal) downloadsModal.classList.remove('active');
+        });
+
+        // ------------------------------------------------------------------
+        // PCBACK MODAL LOGIC (Identical to Pstyle)
+        // ------------------------------------------------------------------
+        const pcbackBtn = document.getElementById('pcbackBtn'), pcbackModal = document.getElementById('pcbackModal');
+
+        const pcbackImagesList = [
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png",
+            "https://xatimg.com/image/p4bLGOzDTK0y.png"
+        ];
+
+        if(pcbackBtn && pcbackModal) {
+            pcbackBtn.addEventListener('click', () => {
+                const grid = document.getElementById('pcbackGrid'); 
+                if(grid) {
+                    grid.innerHTML = '';
+                    pcbackImagesList.forEach((imgUrl) => {
+                        grid.innerHTML += `
+                        <div class="pcback-item">
+                            <img src="${imgUrl}" class="pcback-thumb" alt="PCback Preview">
+                            <div class="download-btn-overlay" style="justify-content: space-between;">
+                                <span class="copy-feedback" style="opacity: 0; color: #fff; font-size: 0.75rem; font-weight: bold; font-family: var(--font-body); transition: opacity 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none;">Copiado</span>
+                                <button class="copy-url-btn icon-glass-fx circle" data-url="${imgUrl}" style="width: 36px; height: 36px; padding: 6px; border: none; background: transparent;" title="Copiar URL">
+                                    <img src="https://i.imgur.com/tPZigqF.png" style="width: 100%; height: 100%; object-fit: contain;" alt="Copiar">
+                                </button>
+                            </div>
+                        </div>`;
+                    });
+                }
+                pcbackModal.classList.add('active');
+            });
+        }
+
+        const pcbackGrid = document.getElementById('pcbackGrid');
+        if (pcbackGrid) {
+            pcbackGrid.addEventListener('click', (e) => {
+                const thumb = e.target.closest('.pcback-thumb');
+                const btn = e.target.closest('.copy-url-btn');
+                
+                if (thumb) {
+                    const staleOverlay = document.getElementById('pstyle-dynamic-preview');
+                    if(staleOverlay) staleOverlay.remove();
+
+                    const overlay = document.createElement('div');
+                    overlay.id = 'pstyle-dynamic-preview';
+                    overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999999; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; cursor: pointer;';
+
+                    const img = document.createElement('img');
+                    img.src = thumb.src;
+                    img.style.cssText = 'max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 12px; box-shadow: 0 0 50px rgba(255,255,255,0.2); border: 1px solid #fff; transform: scale(0.9); transition: transform 0.3s ease;';
+
+                    overlay.appendChild(img);
+                    document.body.appendChild(overlay);
+
+                    void overlay.offsetWidth;
+
+                    overlay.style.opacity = '1';
+                    img.style.transform = 'scale(1)';
+
+                    overlay.addEventListener('click', function(e) {
+                        overlay.style.opacity = '0';
+                        img.style.transform = 'scale(0.9)';
+                        
+                        setTimeout(() => {
+                            if (document.body.contains(overlay)) {
+                                document.body.removeChild(overlay);
+                            }
+                        }, 300);
+                    });
+
+                    return;
+                }
+
+                if (btn) {
+                    const url = btn.getAttribute('data-url');
+                    const textArea = document.createElement("textarea");
+                    textArea.value = url;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        const feedbackEl = btn.parentElement.querySelector('.copy-feedback');
+                        if(feedbackEl) {
+                            feedbackEl.style.opacity = '1';
+                            setTimeout(() => { feedbackEl.style.opacity = '0'; }, 1800);
+                        }
+                    } catch (err) {
+                        console.error('Copy failed', err);
+                    }
+                    document.body.removeChild(textArea);
+                }
+            });
+        }
+        
+        const backFromPcbackBtn = document.getElementById('backFromPcbackBtn');
+        if(backFromPcbackBtn && pcbackModal) {
+            backFromPcbackBtn.addEventListener('click', () => pcbackModal.classList.remove('active'));
+        }
+        
+        window.addEventListener('click', (e) => {
+            if(pcbackModal && e.target === pcbackModal) pcbackModal.classList.remove('active');
         });
 
         // --- SCROLL REVEAL (Safe for older Safari) ---
