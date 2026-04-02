@@ -62,7 +62,7 @@
             height: 100dvh; /* Soporte nativo iOS para evitar recorte de barra inferior */
             overflow: hidden; 
             position: relative;
-            padding-top: 65px; /* Espacio para la barra superior */
+            padding-top: 65px; /* Espacio reservado para la barra superior/banner global */
             box-sizing: border-box;
         }
 
@@ -288,7 +288,8 @@
         .content-wrapper { width: 100%; max-width: 1600px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; position: relative; z-index: 1; }
 
         /* Right Panel */
-        .right-panel { padding: 30px; display: flex; flex-direction: column; gap: 24px; border-left: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.4); backdrop-filter: blur(25px); z-index: 10; overflow-y: auto; }
+        /* Ajuste de márgenes/paddings corregidos para un ensamble sin desbordes */
+        .right-panel { padding: 0 30px 30px 30px; display: flex; flex-direction: column; gap: 24px; border-left: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.4); backdrop-filter: blur(25px); z-index: 10; overflow-y: auto; margin-top: 0; }
 
         /* Glass Cards */
         .glass-card {
@@ -320,6 +321,13 @@
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 24px;
         }
+        /* Ajuste a 1 columna en móviles */
+        @media (max-width: 768px) {
+            .portfolio-inline-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
         .portfolio-inline-card {
             background: #000;
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -601,7 +609,11 @@
         .connector-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.3; }
         path.dashed-line { fill: none; stroke: rgba(255,255,255,0.3); stroke-width: 1; stroke-dasharray: 4 4; filter: drop-shadow(0 0 2px #fff); }
         .css-saturn-container { width: 100%; height: 300px; margin-top: 30px; display: flex; justify-content: center; align-items: center; perspective: 1000px; mix-blend-mode: screen; opacity: 0.9; cursor: pointer; transition: transform 0.5s; }
-        .css-saturn-container:hover { transform: scale(1.1); }
+        /* Adaptación a móviles para contenedor Saturno */
+        @media (max-width: 768px) {
+            .css-saturn-container { transform: scale(0.8); }
+            .css-saturn-container:hover { transform: scale(0.9); }
+        }
         .css-saturn-container:hover .planet { animation: spinPlanet 3s linear infinite, floatPlanet 6s ease-in-out infinite; }
         .css-saturn-container:hover .rings { animation: rotateRings 3s linear infinite; }
         .planet { 
@@ -714,8 +726,7 @@
                 overflow-y: visible; 
                 border-left: none; 
                 border-top: 1px solid rgba(255,255,255,0.05); 
-                padding: 20px; 
-                padding-bottom: 40px; /* Espacio extra sobre nav inferior */
+                padding: 0 20px 20px 20px; 
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
                 gap: 20px;
@@ -775,6 +786,24 @@
         }
 
         /* XAT WIDGET */
+        /* OBJETIVO 1: Eliminar hueco de 17px arriba del avatar y texto, y OBJETIVO 3: Avatar sin cortes */
+        .xat-profile-widget, 
+        .mini-profile-container, 
+        .mini-profile-content, 
+        .mini-profile-link, 
+        .mini-profile-img, 
+        .mp-main-info, 
+        .mp-line1, 
+        .mp-name-eam { 
+            margin-top: 0 !important; 
+            padding-top: 0 !important;
+            overflow: visible !important;
+        }
+        
+        .mp-name-eam {
+            line-height: 1 !important; /* Elimina espacio residual de fuente */
+        }
+        
         .xat-profile-widget { --mp-img-size: 46px; --mp-pawn-w: 30px; --mp-pawn-h: 30px; --mp-name-size: 1rem; --mp-sub-size: 0.7rem; font-family: var(--font-body); display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; width: fit-content; }
         .mini-profile-container { display: flex; justify-content: center; width: auto; }
         .mini-profile-content { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto; column-gap: 12px; align-items: start; color: #e0e0e0; }
@@ -926,6 +955,64 @@
         @keyframes widget-pulse-heart { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
         @keyframes widget-float-up { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.5); } }
 
+        /* --- CORRECCIONES RESPONSIVE MÓVIL (CRÍTICO) --- */
+        @media (max-width: 768px) {
+            /* OBJETIVO 1: Eliminar glow del footer en móvil */
+            .render-shadow {
+                display: none !important;
+                box-shadow: none !important;
+                filter: none !important;
+            }
+            .render-img {
+                filter: none !important;
+            }
+
+            /* OBJETIVO 2: Icono "?" (y demás) alineados correctamente */
+            .sidebar .nav-item {
+                margin: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+            /* OBJETIVO 3: Calendario funcional y encima de todo sin mover su lugar base */
+            .calendar-card {
+                position: relative !important;
+                z-index: 9999 !important;
+            }
+            .calendar-popup {
+                position: absolute !important;
+                z-index: 9999 !important;
+                /* Abrir hacia arriba para evitar colisión con el menú inferior */
+                top: auto !important;
+                bottom: calc(100% + 15px) !important;
+                transform: translateX(-50%) translateY(10px) !important;
+            }
+            .calendar-popup.open {
+                transform: translateX(-50%) translateY(0) !important;
+            }
+        }
+        
+        /* ESTILO NUEVO GRADIENTE DEBAJO DEL RENDER (FOOTER) */
+        .footer-render-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            padding-top: 60px;
+        }
+        .footer-render-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%; /* Altura del fundido */
+            background: linear-gradient(to top, #000000 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
     </style>
 </head>
 <body>
@@ -992,6 +1079,11 @@
         <!-- Modal GALERÍA PSTYLE -->
         <div id="downloadsModal" class="modal">
             <div class="glass-card modal-content">
+                <div style="display: flex; justify-content: flex-start; margin-bottom: 20px;">
+                    <button class="btn-glass" id="backFromGalleryBtn" style="padding: 10px 25px; font-size: 0.8rem; box-shadow: none;">
+                        VOLVER
+                    </button>
+                </div>
                 <h2 class="metallic-text" style="font-size: 2rem; margin-bottom: 30px;">GALERÍA PSTYLE GRATUITA</h2>
                 <div class="downloads-grid" id="downloadsGrid"></div>
             </div>
@@ -1194,7 +1286,7 @@
                         <div class="glass-card" style="padding: 25px 30px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
                             <div style="flex: 1; min-width: 280px;">
                                 <p style="color: #ccc; line-height: 1.8; font-size: 0.95rem; font-family: var(--font-body); margin: 0;">
-                                    Incluye:<br>
+                                    <strong class="silver-text" style="font-size: 1.2rem; font-family: var(--font-display); display: inline-block; margin-bottom: 8px;">Precio Base: 3K - Xatspace personalizado. Incluye:</strong><br>
                                     ● Galería 4 - 6 imágenes.<br>
                                     ● Reproductor de música 1-4 canciones.<br>
                                     ● Entrega entre 2-3 días.<br>
@@ -1221,15 +1313,13 @@
                             </div>
                         </div>
                     </div> <!-- CIERRE DE PORTFOLIO CONTENT -->
-                    
-                    <!-- RENDER GIGANTE MOVIDO AL FINAL DEL CONTENT WRAPPER -->
-                    <div class="render-section" style="margin-top: 40px;">
-                        <div class="render-shadow"></div>
-                        <!-- ===== CAMBIAR IMAGEN RENDER INFERIOR GIGANTE AQUÍ ===== -->
-                        <img src="https://i.imgur.com/c7zLFeg.png" alt="Render" class="render-img" id="scrollRender" style="max-width: 100%; height: auto; display: block;">
-                    </div>
 
                 </div> <!-- CIERRE DE CONTENT WRAPPER -->
+                
+                <!-- NUEVO RENDER FOOTER DE PRUEBA -->
+                <div class="footer-render-wrapper">
+                    <img src="https://i.imgur.com/c7zLFeg.png" alt="Render Footer" style="max-width: 100%; height: auto; object-fit: contain; display: block;">
+                </div>
 
             </main>
 
@@ -1250,7 +1340,7 @@
                                     <!-- ===== CAMBIAR NOMBRE AQUÍ (Eam) ===== -->
                                     <span class="mp-name-eam silver-text"> : ̗̀𝑬𝒂𝒎⁹⁶</span>
                                 </div>
-                                <div class="mp-line2">𝙭𝙖𝙩𝙨𝙥aks 𝙨𝙚𝙡𝙡𝙚𝙧</div>
+                                <div class="mp-line2">𝙭𝙖𝙩𝙨𝙥aks 𝙨𝙚𝙡eler</div>
                             </div>
                             <div class="mp-status" style="flex-direction: column; align-items: flex-start; gap: 4px;">
                                 <div style="display: flex; align-items: center; gap: 6px;">
@@ -1499,13 +1589,19 @@
             });
         }
 
-        // --- LIGHTBOX LINKS ---
-        const lightbox = document.getElementById('lightbox'), lightboxImg = lightbox.querySelector('img'), lightboxClose = lightbox.querySelector('.lightbox-close');
+        // --- LIGHTBOX LINKS PARA CAROUSEL 3D ORIGINAL ---
+        const lightbox = document.getElementById('lightbox'), lightboxImg = lightbox.querySelector('img');
+        
+        // CORRECCIÓN OBJETIVO 1: Lightbox buggear, cerrar haciendo click en cualquier lado 
+        if(lightbox) {
+            lightbox.addEventListener('click', () => { 
+                lightbox.classList.remove('active'); 
+            });
+        }
+
         document.querySelectorAll('.carousel-item').forEach(item => {
             item.addEventListener('click', () => { lightboxImg.src = item.querySelector('img').src; lightbox.classList.add('active'); });
         });
-        if(lightboxClose) lightboxClose.addEventListener('click', () => lightbox.classList.remove('active'));
-        if(lightbox) lightbox.addEventListener('click', (e) => { if(e.target === lightbox) lightbox.classList.remove('active'); });
 
         // --- NAVEGACIÓN DINÁMICA: HOME Y PORTAFOLIO IN-PLACE ---
         const homeBtn = document.getElementById('homeBtn');
@@ -1599,16 +1695,12 @@
         });
 
         // --- MUSIC PLAYER LISTA & CONTROLES ---
-        // ===== CAMBIAR NOMBRES DE CANCIONES AQUÍ (Archivos locales .mp3) =====
+        // ===== CAMBIAR NOMBRES DE CANCIONES AQUÍ (Archivos locales o URLs directas) =====
         const playlist = [
-            { title: "Wake up", artist: "The Weeknd", src: "song1.mp3" },
-            { title: "Take me back to LA", artist: "The Weeknd", src: "song2.mp3" },
-            { title: "Drive", artist: "The Weeknd", src: "song3.mp3" },
-            { title: "Seven", artist: "Jungkook", src: "song4.mp3" },
-            { title: "Standing Next To You Ft. Usher", artist: "Jungkook", src: "song5.mp3" },
-            { title: "Luther", artist: "Kendrick Lamar", src: "song6.mp3" },
-            { title: "Rockstar", artist: "Post Malone", src: "song7.mp3" },
-            { title: "Kpop", artist: "Travis Scott", src: "song8.mp3" }
+            { title: "SoundHelix Song 1", artist: "SoundHelix", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+            { title: "SoundHelix Song 2", artist: "SoundHelix", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+            { title: "SoundHelix Song 3", artist: "SoundHelix", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+            { title: "SoundHelix Song 4", artist: "SoundHelix", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
         ];
 
         let currentSongIndex = 0;
@@ -1728,10 +1820,45 @@
                 const thumb = e.target.closest('.download-thumb');
                 const btn = e.target.closest('.copy-url-btn');
                 
-                // Handle Preview
+                // OBJETIVO 2: Implementar modal limpio y dinámico, eliminando del DOM al cerrar
                 if (thumb) {
-                    lightboxImg.src = thumb.src;
-                    lightbox.classList.add('active');
+                    // Limpiar cualquier preview existente para no dejar basura ni bugs pegados
+                    const staleOverlay = document.getElementById('pstyle-dynamic-preview');
+                    if(staleOverlay) staleOverlay.remove();
+
+                    // Contenedor overlay fijo
+                    const overlay = document.createElement('div');
+                    overlay.id = 'pstyle-dynamic-preview';
+                    overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999999; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; cursor: pointer;';
+
+                    // Imagen centrada
+                    const img = document.createElement('img');
+                    img.src = thumb.src;
+                    img.style.cssText = 'max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 12px; box-shadow: 0 0 50px rgba(255,255,255,0.2); border: 1px solid #fff; transform: scale(0.9); transition: transform 0.3s ease;';
+
+                    overlay.appendChild(img);
+                    document.body.appendChild(overlay);
+
+                    // Forzar reflow para que corra la transición
+                    void overlay.offsetWidth;
+
+                    // Mostrar el modal
+                    overlay.style.opacity = '1';
+                    img.style.transform = 'scale(1)';
+
+                    // Evento de cierre estricto y seguro
+                    overlay.addEventListener('click', function(e) {
+                        overlay.style.opacity = '0';
+                        img.style.transform = 'scale(0.9)';
+                        
+                        // Eliminar completamente el modal del DOM
+                        setTimeout(() => {
+                            if (document.body.contains(overlay)) {
+                                document.body.removeChild(overlay);
+                            }
+                        }, 300);
+                    });
+
                     return; // Prevent triggering anything else
                 }
 
@@ -1762,6 +1889,11 @@
             });
         }
         
+        const backFromGalleryBtn = document.getElementById('backFromGalleryBtn');
+        if(backFromGalleryBtn && downloadsModal) {
+            backFromGalleryBtn.addEventListener('click', () => downloadsModal.classList.remove('active'));
+        }
+
         const closeDownloadsModal = document.getElementById('closeDownloadsModal');
         if(closeDownloadsModal && downloadsModal) {
             closeDownloadsModal.addEventListener('click', () => downloadsModal.classList.remove('active'));
