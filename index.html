@@ -12,10 +12,13 @@
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://i.imgur.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.pixabay.com" crossorigin>
+    <link rel="preconnect" href="https://xatimg.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Three.js para el Saturno Holográfico y el Fluido Orgánico -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Three.js para el Saturno Holográfico y el Fluido Orgánico (AHORA CON DEFER PARA CARGA RÁPIDA) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 
     <style>
         /* ===== CAMBIAR COLORES AQUÍ ===== */
@@ -265,7 +268,15 @@
         #start-btn:hover { background: #fff; color: #000; box-shadow: 0 0 50px rgba(255,255,255,0.4); transform: translateX(-50%) scale(1.05); }
 
         /* --- FONDO APP --- */
-        #main-app { width: 100%; height: 100%; position: relative; opacity: 0; transition: opacity 2s ease-in-out 0.5s; }
+        #main-app { 
+            width: 100%; 
+            height: 100%; 
+            position: relative; 
+            opacity: 0; 
+            transition: opacity 2s ease-in-out 0.5s; 
+            z-index: 1; /* NUEVO: Mantiene el contexto de capas intacto */
+            isolation: isolate; /* NUEVO: Evita que los fondos se caigan detrás del body negro */
+        }
         #main-app.visible { opacity: 1; }
         .background-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; background: radial-gradient(circle at 50% -20%, #222 0%, #000000 80%); }
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.4; }
@@ -1028,8 +1039,8 @@
             position: fixed; 
             top: 0;
             left: 0;
-            /* Modificado a -1 para ponerlo exacto detrás de tu UI interactiva pero encima de los fondos opacos */
-            z-index: -1; 
+            /* Modificado a -2 para colocarlo exactamente sobre el fondo oscuro y debajo del contenido */
+            z-index: -2; 
             pointer-events: none; 
             opacity: 0; /* Inicia completamente invisible revelando el fondo base oscuro natural */
             transition: opacity 1.2s ease-out; /* Transición súper fluida, de 1.2s sin saltos */
@@ -1038,109 +1049,6 @@
         #canvas-container.ready {
             opacity: 1; /* Se ilumina orgánicamente sin alteraciones de brillo bruscas */
         }
-
-        #mini-open-btn {
-            position: fixed;
-            top: 155px;
-            left: 0;
-            width: 34px;
-            height: 34px;
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #fff;
-            border-radius: 6px;
-            cursor: pointer;
-            display: none; 
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            z-index: 2147483647;
-            pointer-events: auto;
-            user-select: none;
-            transition: background 0.2s;
-        }
-        #mini-open-btn.visible { display: flex; }
-        #mini-open-btn:hover { background: rgba(45, 45, 45, 0.7); }
-
-        #main-panel {
-            position: fixed; 
-            top: 155px; 
-            left: 0; 
-            width: max-content;  
-            height: 34px;   
-            box-sizing: border-box; 
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 0 10px 0 15px; 
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 6px;
-            transition: max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-            opacity: 1;
-            max-width: calc(100vw - 20px); 
-            overflow-x: auto;
-            overflow-y: hidden; 
-            white-space: nowrap;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            scrollbar-width: none; 
-            z-index: 2147483647; 
-            pointer-events: auto;
-        }
-        #main-panel::-webkit-scrollbar { display: none; }
-        #main-panel.hidden { max-width: 0; opacity: 0; padding: 0; border-width: 0; pointer-events: none; }
-
-        #main-panel .palette-btn {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.6);
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
-            flex-shrink: 0;
-        }
-        #main-panel .palette-btn:hover { transform: scale(1.2); border-color: #fff; }
-        #main-panel .palette-label { color: #ddd; font-size: 11px; margin-right: 5px; user-select: none; font-weight: bold; }
-
-        #close-btn {
-            margin-left: auto; 
-            position: sticky;
-            right: 0;
-            z-index: 10;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            color: #fff;
-            transition: background 0.2s, transform 0.2s;
-            flex-shrink: 0; 
-        }
-        #close-btn:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); }
-
-        #main-panel .control-group { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #ddd; user-select: none; height: 100%; flex-shrink: 0; }
-        #main-panel input[type="range"] { width: 70px; height: 10px; accent-color: #fff; cursor: pointer; flex-shrink: 0; }
-        #main-panel input[type="checkbox"] { cursor: pointer; accent-color: #fff; width: 14px; height: 14px; flex-shrink: 0; }
-        #main-panel .separator { width: 1px; height: 18px; background: rgba(255,255,255,0.25); margin: 0 2px; flex-shrink: 0; }
-
-        /* CRÍTICO: Transición suave desde el color base oscuro sin parpadeos */
-        body {
-            opacity: 0;
-            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-            will-change: opacity;
-        }
-
-        body.loaded {
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
@@ -1148,43 +1056,6 @@
     <!-- ========================================================
          INICIO CÓDIGO AÑADIDO: INTERFAZ FLUIDO ORGÁNICO
          ======================================================== -->
-    <div id="mini-open-btn" title="Mostrar Panel de Controles">≡</div>
-    <div id="main-panel">
-        <div class="control-group" id="palettes-container">
-            <div class="palette-label">Paletas:</div>
-        </div>
-        <div class="separator"></div>
-        <div class="control-group" title="Desplazamiento / uTime">
-            <label for="ctrl-offset">Desplaz.</label>
-            <input type="range" id="ctrl-offset" min="0" max="2" step="0.01">
-        </div>
-        <div class="control-group" title="Intensidad de Mezcla">
-            <label for="ctrl-contrast">Contraste</label>
-            <input type="range" id="ctrl-contrast" min="0" max="5" step="0.01">
-        </div>
-        <div class="separator"></div>
-        <div class="control-group">
-            <label for="ctrl-speed">Velocidad</label>
-            <input type="range" id="ctrl-speed" min="0" max="1" step="0.01">
-        </div>
-        <div class="control-group" title="Zoom del Shader">
-            <label for="ctrl-elevation">Altura</label>
-            <input type="range" id="ctrl-elevation" min="0" max="5" step="0.01">
-        </div>
-        <div class="control-group" title="Amplitud de la Onda">
-            <label for="ctrl-frequency">Detalle</label>
-            <input type="range" id="ctrl-frequency" min="0.05" max="1" step="0.01">
-        </div>
-        <div class="separator"></div>
-        <div class="control-group" title="Activa un patrón topográfico estilizado">
-            <label for="ctrl-wireframe">Malla</label>
-            <input type="checkbox" id="ctrl-wireframe">
-        </div>
-        <div id="close-btn" title="Ocultar controles">❯</div>
-    </div>
-
-    <div id="canvas-container"></div>
-
     <script type="x-shader/x-vertex" id="waveVertexShader">
         varying vec2 vUv;
         void main() {
@@ -1259,11 +1130,7 @@
         </video>
         
         <div class="landing-content">
-            <div class="landing-image-container">
-                <!-- ===== CAMBIAR IMAGEN RENDER DE INTRO AQUÍ (ej. render-inicio.png) ===== -->
-                <img src="render-inicio.png" alt="Protocol Samur.AI" class="landing-render">
-                <div class="landing-gradient"></div>
-            </div>
+            <!-- Imagen Render Eliminada para Optimización de Carga -->
             <!-- ===== CAMBIAR TEXTO BOTÓN INTRO AQUÍ ===== -->
             <button id="start-btn">INICIAR SISTEMA</button>
         </div>
@@ -1280,6 +1147,10 @@
         </div>
 
         <div class="background-layer"></div>
+        
+        <!-- CONTENEDOR DEL FLUIDO MOVIDO AQUÍ PARA QUE SE VEA CORRECTAMENTE -->
+        <div id="canvas-container"></div>
+        
         <div class="warm-glow"></div>
         <div id="page-transition-overlay"></div>
 
@@ -1385,7 +1256,7 @@
                             <div class="glass-card main-video-card">
                                 <div class="video-container">
                                     <!-- ===== CAMBIAR VIDEO PRINCIPAL SUPERIOR AQUÍ (ej. video1.mp4) ===== -->
-                                    <video id="mainVideo" autoplay loop muted playsinline>
+                                    <video id="mainVideo" loop muted playsinline preload="none">
                                         <source src="https://cdn.pixabay.com/video/2018/09/19/18327-291012897_large.mp4" type="video/mp4">
                                     </video>
                                 </div>
@@ -1408,7 +1279,7 @@
                             <div class="glass-card video-module" style="min-height: 200px;">
                                 <div class="video-container">
                                     <!-- ===== CAMBIAR VIDEO SECUNDARIO AL LADO DE LA FRASE AQUÍ (ej. video2.mp4) ===== -->
-                                    <video autoplay loop muted playsinline>
+                                    <video id="secondaryVideo" loop muted playsinline preload="none">
                                         <source src="https://i.imgur.com/LXKdPJV.mp4" type="video/mp4">
                                     </video>
                                 </div>
@@ -1422,14 +1293,14 @@
                             <div class="gallery-section">
                                 <div class="carousel">
                                     <!-- ===== CAMBIAR IMÁGENES DEL CARRUSEL 3D AQUÍ (galeria1.jpg a galeria8.jpg) ===== -->
-                                    <div class="carousel-item"><img src="galeria1.jpg" alt=""></div>
-                                    <div class="carousel-item"><img src="galeria2.jpg" alt=""></div>
-                                    <div class="carousel-item"><img src="galeria3.jpg" alt=""></div>
-                                    <div class="carousel-item"><img src="galeria4.jpg" alt=""></div>
-                                    <div class="carousel-item"><img src="galeria5.jpg" alt=""></div>
-                                    <div class="carousel-item"><img src="galeria6.jpg" alt=""></div>
-                                    <div class="carousel-item"><img src="galeria7.jpg" alt=""></div>
-                                    <div class="carousel-item"><img src="galeria8.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria1.jpg" alt="" loading="lazy"></div>
+                                    <div class="carousel-item"><img src="galeria2.jpg" alt="" loading="lazy"></div>
+                                    <div class="carousel-item"><img src="galeria3.jpg" alt="" loading="lazy"></div>
+                                    <div class="carousel-item"><img src="galeria4.jpg" alt="" loading="lazy"></div>
+                                    <div class="carousel-item"><img src="galeria5.jpg" alt="" loading="lazy"></div>
+                                    <div class="carousel-item"><img src="galeria6.jpg" alt="" loading="lazy"></div>
+                                    <div class="carousel-item"><img src="galeria7.jpg" alt="" loading="lazy"></div>
+                                    <div class="carousel-item"><img src="galeria8.jpg" alt="" loading="lazy"></div>
                                 </div>
                             </div>
                         </div>
@@ -1590,12 +1461,12 @@
                             </a>
                             <div class="mp-main-info">
                                 <div class="mp-line1">
-                                    <img src="https://i.ibb.co/0pSLmw1x/sky.webp" alt="Pawn" class="mp-pawn-icon">
+                                    <img src="https://i.ibb.co/LdncmgG0/a-p1pwn-00c000-hat3-w0i592395ic-20.webp" alt="Pawn" class="mp-pawn-icon">
                                     <!-- ===== CAMBIAR NOMBRE AQUÍ (Eam) ===== -->
                                     <span class="mp-name-eam silver-text"> : ̗̀𝑬𝒂𝒎⁹⁶</span>
                                     <img src="https://i.imgur.com/zkCzsHP.png" alt="Icono extra" style="width: 15px; height: 15px; margin-left: 5px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));">
                                 </div>
-                                <div class="mp-line2"> ·𝙭𝙖𝙩𝙨𝙥𝙖𝙘𝙚 𝙨𝙚𝙡𝙡𝙚𝙧· 𝙨𝙪𝙥𝙥𝙤𝙧𝙩𝙚𝙧</div>
+                                <div class="mp-line2">𝙭𝙖𝙩𝙨𝙥𝙖𝙘𝙚 𝙨𝙚𝙡𝙡𝙚𝙧</div>
                             </div>
                             <div class="mp-status" style="flex-direction: column; align-items: flex-start; gap: 4px;">
                                 <div style="display: flex; align-items: center; gap: 6px;">
@@ -1716,6 +1587,12 @@
         startBtn.addEventListener('click', function(e) {
             landingScreen.classList.add('hidden');
             
+            // Pausar el video de introducción en segundo plano para liberar GPU y RAM
+            const landingVideo = document.getElementById('landing-bg-video');
+            if (landingVideo) {
+                setTimeout(() => { landingVideo.pause(); }, 1500); 
+            }
+            
             // Iniciar reproducción directamente atada al click del usuario (políticas del navegador)
             if (audio) {
                 audio.play().then(() => {
@@ -1727,73 +1604,15 @@
                 }).catch(() => {});
             }
 
-            if (mainVideo) {
-                mainVideo.play().catch(() => {});
-            }
+            // Iniciar videos pesados SOLAMENTE cuando el usuario entra, liberando la carga inicial
+            if (mainVideo) mainVideo.play().catch(() => {});
+            const secVideo = document.getElementById('secondaryVideo');
+            if (secVideo) secVideo.play().catch(() => {});
             
             // Mostrar la app principal con la transición intacta
             setTimeout(() => {
                 mainApp.classList.add('visible');
             }, 800);
-        });
-
-        // --- PARTICLES ---
-        const canvas = document.getElementById('particles-canvas');
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            let width, height, particles = [];
-
-            function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
-            window.addEventListener('resize', resize); resize();
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * width; this.y = Math.random() * height;
-                    this.vx = (Math.random() - 0.5) * 0.3; this.vy = (Math.random() - 0.5) * 0.3;
-                    this.size = Math.random() * 2;
-                }
-                update() {
-                    this.x += this.vx; this.y += this.vy;
-                    if (this.x < 0 || this.x > width) this.vx *= -1;
-                    if (this.y < 0 || this.y > height) this.vy *= -1;
-                }
-                draw() {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
-                }
-            }
-            for (let i = 0; i < 70; i++) particles.push(new Particle());
-
-            function animateParticles() {
-                ctx.clearRect(0, 0, width, height);
-                for (let i = 0; i < particles.length; i++) {
-                    particles[i].update(); particles[i].draw();
-                    for (let j = i; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < 100) {
-                            ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 - dist/1000})`;
-                            ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
-                        }
-                    }
-                }
-                requestAnimationFrame(animateParticles);
-            }
-            animateParticles();
-        }
-
-        // --- APP LOGIC (Forzar Auto-Play de videos locales, seguro para Safari) ---
-        document.querySelectorAll('video:not([controls])').forEach(vid => {
-            vid.muted = true;
-            vid.playsInline = true;
-            let playPromise = vid.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    vid.muted = true;
-                    vid.play().catch(e => console.log("Video autoplay prevented"));
-                });
-            }
         });
 
         // --- LÓGICA DE ICONOS DINÁMICOS (PLAY/PAUSE) ---
@@ -1952,9 +1771,19 @@
             });
         }
 
+        // Optimización extrema: Throttling y Hardware Acceleration para el parallax de tarjetas
+        let parallaxTicking = false;
         document.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth - e.pageX) / 80; const y = (window.innerHeight - e.pageY) / 80;
-            document.querySelectorAll('.glass-card:not(.calendar-popup)').forEach(card => card.style.transform = `translateX(${x}px) translateY(${y}px)`);
+            if (!parallaxTicking) {
+                window.requestAnimationFrame(() => {
+                    const x = (window.innerWidth - e.pageX) / 80; const y = (window.innerHeight - e.pageY) / 80;
+                    document.querySelectorAll('.glass-card:not(.calendar-popup)').forEach(card => {
+                        card.style.transform = `translate3d(${x}px, ${y}px, 0)`; // Aceleración GPU
+                    });
+                    parallaxTicking = false;
+                });
+                parallaxTicking = true;
+            }
         });
 
         // --- MUSIC PLAYER LISTA & CONTROLES ---
@@ -2073,7 +1902,7 @@
                     pstyleImages.forEach((imgUrl, index) => {
                         grid.innerHTML += `
                         <div class="download-item">
-                            <img src="${imgUrl}" class="download-thumb" alt="Pstyle Preview">
+                            <img src="${imgUrl}" class="download-thumb" alt="Pstyle Preview" loading="lazy">
                             <div class="download-btn-overlay" style="justify-content: space-between;">
                                 <span class="copy-feedback" style="opacity: 0; color: #fff; font-size: 0.75rem; font-weight: bold; font-family: var(--font-body); transition: opacity 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none;">Copiado</span>
                                 <button class="copy-url-btn icon-glass-fx circle" data-url="${imgUrl}" style="width: 36px; height: 36px; padding: 6px; border: none; background: transparent;" title="Copiar URL">
@@ -2207,7 +2036,7 @@
                     pcbackImagesList.forEach((imgUrl) => {
                         grid.innerHTML += `
                         <div class="pcback-item">
-                            <img src="${imgUrl}" class="pcback-thumb" alt="PCback Preview">
+                            <img src="${imgUrl}" class="pcback-thumb" alt="PCback Preview" loading="lazy">
                             <div class="download-btn-overlay" style="justify-content: space-between;">
                                 <span class="copy-feedback" style="opacity: 0; color: #fff; font-size: 0.75rem; font-weight: bold; font-family: var(--font-body); transition: opacity 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none;">Copiado</span>
                                 <button class="copy-url-btn icon-glass-fx circle" data-url="${imgUrl}" style="width: 36px; height: 36px; padding: 6px; border: none; background: transparent;" title="Copiar URL">
@@ -2448,60 +2277,34 @@
         // ========================================================
         (function() {
             let sceneFluid, cameraFluid, rendererFluid, materialFluid, meshFluid;
-            let clockFluid = new THREE.Clock();
+            let clockFluid;
 
-            const STORAGE_KEY = 'shader_bg_config_xat';
-
-            const defaultConfig = {
+            // Optimización: Configuración fija (Paleta Azul) - Cero procesamiento extra
+            const configFluid = {
                 color1: '#001f3f', color2: '#0074d9', color3: '#7fdbff',
                 speed: 0.5, elevation: 1.0, frequency: 0.5, colorOffset: 0.8, colorMultiplier: 5.0, 
-                wireframe: false, isPanelOpen: false 
+                wireframe: false
             };
 
-            const palettes = [
-                ['#001f3f', '#0074d9', '#7fdbff'], ['#2a0800', '#b22222', '#ff8c00'],
-                ['#0d0221', '#ff007f', '#00f0ff'], ['#002b18', '#007f5f', '#aacc00'],
-                ['#15062a', '#91165b', '#ff8822'], ['#000000', '#777777', '#ffffff']
-            ];
-
-            let configFluid = { ...defaultConfig };
-            let saveTimeoutFluid = null;
-
-            const controlsList = [
-                { id: 'ctrl-offset', key: 'colorOffset', type: 'float', uniform: 'uColorOffset' },
-                { id: 'ctrl-contrast', key: 'colorMultiplier', type: 'float', uniform: 'uColorMultiplier' },
-                { id: 'ctrl-speed', key: 'speed', type: 'float', uniform: 'uSpeed' },
-                { id: 'ctrl-elevation', key: 'elevation', type: 'float', uniform: 'uElevation' },
-                { id: 'ctrl-frequency', key: 'frequency', type: 'float', uniform: 'uFrequency' },
-                { id: 'ctrl-wireframe', key: 'wireframe', type: 'bool', uniform: 'uWireframe' }
-            ];
-
-            function loadConfig() {
-                try {
-                    const savedConfig = localStorage.getItem(STORAGE_KEY);
-                    if (savedConfig) configFluid = { ...configFluid, ...JSON.parse(savedConfig) };
-                } catch (e) { console.error("Error al cargar config", e); }
-            }
-
-            function requestSave() {
-                if (saveTimeoutFluid) clearTimeout(saveTimeoutFluid);
-                saveTimeoutFluid = setTimeout(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(configFluid)); }, 500); 
-            }
-
             function initFluid() {
-                loadConfig();
+                if (typeof THREE === 'undefined') {
+                    // Esperar un momento si el script de Three.js con 'defer' aún no se carga
+                    setTimeout(initFluid, 50);
+                    return;
+                }
+
+                clockFluid = new THREE.Clock();
                 const container = document.getElementById('canvas-container');
 
                 sceneFluid = new THREE.Scene();
                 cameraFluid = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-                rendererFluid = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                // Optimización extrema de GPU
+                rendererFluid = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
                 rendererFluid.setClearColor(0x000000, 0);
                 rendererFluid.setSize(window.innerWidth, window.innerHeight);
-                rendererFluid.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+                rendererFluid.setPixelRatio(1); // Fijo en 1: Máximo rendimiento, la borrosidad es imperceptible en fluidos
                 container.appendChild(rendererFluid.domElement);
-
-                rendererFluid.render(sceneFluid, cameraFluid);
 
                 const geometry = new THREE.PlaneGeometry(2, 2);
                 materialFluid = new THREE.ShaderMaterial({
@@ -2518,7 +2321,7 @@
                         uColor3: { value: new THREE.Color(configFluid.color3) },
                         uColorOffset: { value: configFluid.colorOffset },
                         uColorMultiplier: { value: configFluid.colorMultiplier },
-                        uWireframe: { value: configFluid.wireframe ? 1.0 : 0.0 }
+                        uWireframe: { value: 0.0 }
                     },
                     depthWrite: false
                 });
@@ -2526,109 +2329,21 @@
                 meshFluid = new THREE.Mesh(geometry, materialFluid);
                 sceneFluid.add(meshFluid);
 
-                buildPaletteBar();
-                setupUIValues();
-
                 window.addEventListener('resize', onWindowResizeFluid, { passive: true });
                 
                 materialFluid.uniforms.uTime.value = 0.0001;
                 
-                // Forzar precompilación síncrona del shader para evitar parpadeos "flashes"
                 if (rendererFluid.compile) rendererFluid.compile(sceneFluid, cameraFluid);
                 rendererFluid.render(sceneFluid, cameraFluid);
                 
                 animateFluid();
-                setInterval(pollDOMAndSync, 50); 
                 
-                // El secreto Senior: Esperar dos frames reales (flush a pantalla) antes de revelar
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         const container = document.getElementById('canvas-container');
                         if (container) container.classList.add('ready');
                     });
                 });
-            }
-
-            function buildPaletteBar() {
-                const container = document.getElementById('palettes-container');
-                palettes.forEach(p => {
-                    const btn = document.createElement('div');
-                    btn.className = 'palette-btn';
-                    btn.style.background = `linear-gradient(135deg, ${p[0]} 0%, ${p[1]} 50%, ${p[2]} 100%)`;
-                    ['click', 'pointerdown', 'touchstart'].forEach(evt => {
-                        btn.addEventListener(evt, (e) => {
-                            e.stopPropagation(); e.preventDefault();
-                            configFluid.color1 = p[0]; configFluid.color2 = p[1]; configFluid.color3 = p[2];
-                            if (materialFluid) {
-                                materialFluid.uniforms.uColor1.value.set(p[0]);
-                                materialFluid.uniforms.uColor2.value.set(p[1]);
-                                materialFluid.uniforms.uColor3.value.set(p[2]);
-                            }
-                            requestSave();
-                        }, { capture: true });
-                    });
-                    container.appendChild(btn);
-                });
-            }
-
-            function setupUIValues() {
-                const openBtn = document.getElementById('mini-open-btn');
-                const mainPanel = document.getElementById('main-panel');
-                const closeBtn = document.getElementById('close-btn');
-
-                const updateVisibility = () => {
-                    if (configFluid.isPanelOpen) { mainPanel.classList.remove('hidden'); openBtn.classList.remove('visible'); } 
-                    else { mainPanel.classList.add('hidden'); openBtn.classList.add('visible'); }
-                };
-                updateVisibility();
-
-                const togglePanel = (e, targetState) => {
-                    e.stopPropagation(); e.preventDefault();
-                    configFluid.isPanelOpen = targetState !== undefined ? targetState : !configFluid.isPanelOpen;
-                    requestSave(); updateVisibility();
-                };
-
-                openBtn.addEventListener('click', (e) => togglePanel(e, true), { capture: true });
-                closeBtn.addEventListener('click', (e) => togglePanel(e, false), { capture: true });
-
-                controlsList.forEach(c => {
-                    const el = document.getElementById(c.id);
-                    if (el) {
-                        if (c.type === 'bool') el.checked = !!configFluid[c.key];
-                        else el.value = configFluid[c.key];
-                    }
-                });
-            }
-
-            function pollDOMAndSync() {
-                if (!materialFluid) return;
-                let changesDetected = false;
-
-                controlsList.forEach(c => {
-                    const el = document.getElementById(c.id);
-                    if (!el) return;
-
-                    if (c.type === 'float') {
-                        const val = parseFloat(el.value);
-                        if (!isNaN(val) && val !== configFluid[c.key]) {
-                            configFluid[c.key] = val;
-                            materialFluid.uniforms[c.uniform].value = val;
-                            changesDetected = true;
-                        }
-                    } else if (c.type === 'bool') {
-                        const val = el.checked;
-                        if (val !== configFluid[c.key]) {
-                            configFluid[c.key] = val;
-                            if (materialFluid.uniforms[c.uniform]) materialFluid.uniforms[c.uniform].value = val ? 1.0 : 0.0; 
-                            changesDetected = true;
-                        }
-                    }
-                });
-
-                if (changesDetected) {
-                    requestSave();
-                    if(rendererFluid && sceneFluid && cameraFluid) rendererFluid.render(sceneFluid, cameraFluid);
-                }
             }
 
             function onWindowResizeFluid() {
@@ -2640,100 +2355,19 @@
             function animateFluid() {
                 requestAnimationFrame(animateFluid);
                 if (!materialFluid || !rendererFluid) return;
-                pollDOMAndSync();
                 materialFluid.uniforms.uTime.value = clockFluid.getElapsedTime();
                 rendererFluid.render(sceneFluid, cameraFluid);
             }
 
-            // Iniciar de forma segura sin sobreescribir el window.onload actual de ser necesario
             if (document.readyState === "complete" || document.readyState === "interactive") {
                 setTimeout(initFluid, 1);
             } else {
                 document.addEventListener("DOMContentLoaded", initFluid);
             }
-
-            window.addEventListener('load', () => {
-                const panel = document.getElementById('main-panel');
-                const btn = document.getElementById('mini-open-btn');
-
-                // Buscar el elemento EXACTO que contiene el texto "PC BACK"
-                const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, null, false);
-
-                let target = null;
-
-                while (walker.nextNode()) {
-                    const el = walker.currentNode;
-
-                    if (el.children.length === 0 && el.textContent.trim() === "PC BACK") {
-                        target = el;
-                        break;
-                    }
-                }
-
-                if (target) {
-                    const rect = target.getBoundingClientRect();
-
-                    const offset = 6; // separación EXACTA mínima debajo del texto
-
-                    const newTop = rect.bottom + offset;
-
-                    if (panel) panel.style.top = newTop + 'px';
-                    if (btn) btn.style.top = newTop + 'px';
-
-                    if (panel) panel.style.top = (parseFloat(panel.style.top) + 100) + 'px';
-                    if (btn) btn.style.top = (parseFloat(btn.style.top) + 100) + 'px';
-                }
-            });
         })();
         // ========================================================
         // FIN SCRIPT AÑADIDO
         // ========================================================
-
-        window.addEventListener('load', () => {
-            requestAnimationFrame(() => {
-                document.body.classList.add('loaded');
-            });
-        });
-
-        window.addEventListener('load', () => {
-            const panel = document.getElementById('main-panel');
-            const btn = document.getElementById('mini-open-btn');
-
-            const extraOffset = 100;
-
-            if (panel) {
-                const currentTop = panel.offsetTop;
-                panel.style.top = (currentTop + extraOffset) + 'px';
-            }
-
-            if (btn) {
-                const currentTopBtn = btn.offsetTop;
-                btn.style.top = (currentTopBtn + extraOffset) + 'px';
-            }
-        });
-
-        window.addEventListener('load', () => {
-            const panel = document.getElementById('main-panel');
-            const btn = document.getElementById('mini-open-btn');
-
-            const move = 100;
-
-            if (panel) {
-                const rect = panel.getBoundingClientRect();
-                const fromBottom = window.innerHeight - rect.top;
-
-                panel.style.top = 'auto';
-                panel.style.bottom = (fromBottom - move) + 'px';
-            }
-
-            if (btn) {
-                const rectBtn = btn.getBoundingClientRect();
-                const fromBottomBtn = window.innerHeight - rectBtn.top;
-
-                btn.style.top = 'auto';
-                btn.style.bottom = (fromBottomBtn - move) + 'px';
-            }
-        });
 
         // --- LÓGICA DINÁMICA DE PORTAFOLIO ---
         // Detecta automáticamente si el GIF es válido y gestiona el placeholder
