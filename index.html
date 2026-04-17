@@ -314,7 +314,7 @@
 
         /* Glass Cards */
         .glass-card {
-            background: var(--glass-bg); backdrop-filter: blur(25px) saturate(0%); -webkit-backdrop-filter: blur(25px) saturate(0%);
+            background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
             color: var(--text-main); transition: all 0.4s ease; position: relative; overflow: hidden;
             max-width: 100vw;
@@ -391,7 +391,7 @@
             position: absolute;
             top: 0; left: 0;
             z-index: 2;
-            opacity: 0;
+            opacity: 0.001; /* Fix iOS: Fuerza la carga del GIF en segundo plano */
             transition: opacity 0.4s ease;
             outline: none;
         }
@@ -770,6 +770,7 @@
                 border-right: none; 
                 border-top: 1px solid rgba(255,255,255,0.1); 
                 justify-content: space-around; 
+                align-items: center;
                 z-index: 100;
                 position: sticky;
                 bottom: 0;
@@ -777,6 +778,7 @@
                 backdrop-filter: blur(25px);
                 -webkit-backdrop-filter: blur(25px);
             }
+            .sidebar .nav-item, .sidebar a.nav-item { margin: 0 !important; }
             .brand-icon { margin-bottom: 0; width: 40px; height: 40px; }
             .nav-item { margin-bottom: 0; }
             .nav-item.active { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.6); transform: translateY(-3px); }
@@ -1293,14 +1295,14 @@
                             <div class="gallery-section">
                                 <div class="carousel">
                                     <!-- ===== CAMBIAR IMÁGENES DEL CARRUSEL 3D AQUÍ (galeria1.jpg a galeria8.jpg) ===== -->
-                                    <div class="carousel-item"><img src="galeria1.jpg" alt="" loading="lazy"></div>
-                                    <div class="carousel-item"><img src="galeria2.jpg" alt="" loading="lazy"></div>
-                                    <div class="carousel-item"><img src="galeria3.jpg" alt="" loading="lazy"></div>
-                                    <div class="carousel-item"><img src="galeria4.jpg" alt="" loading="lazy"></div>
-                                    <div class="carousel-item"><img src="galeria5.jpg" alt="" loading="lazy"></div>
-                                    <div class="carousel-item"><img src="galeria6.jpg" alt="" loading="lazy"></div>
-                                    <div class="carousel-item"><img src="galeria7.jpg" alt="" loading="lazy"></div>
-                                    <div class="carousel-item"><img src="galeria8.jpg" alt="" loading="lazy"></div>
+                                    <div class="carousel-item"><img src="galeria1.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria2.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria3.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria4.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria5.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria6.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria7.jpg" alt=""></div>
+                                    <div class="carousel-item"><img src="galeria8.jpg" alt=""></div>
                                 </div>
                             </div>
                         </div>
@@ -2372,23 +2374,25 @@
         // --- LÓGICA DINÁMICA DE PORTAFOLIO ---
         // Detecta automáticamente si el GIF es válido y gestiona el placeholder
         document.querySelectorAll('.portfolio-inline-video').forEach(img => {
-            // Si el GIF carga correctamente: oculta placeholder, muestra GIF permanentemente
-            img.onload = function() {
-                const placeholder = this.parentElement.querySelector('.portfolio-placeholder');
+            const handleLoad = () => {
+                const placeholder = img.parentElement.querySelector('.portfolio-placeholder');
                 if (placeholder) placeholder.style.display = 'none';
-                this.style.opacity = '1';
+                img.style.opacity = '1';
             };
 
-            // Si no hay GIF o el src es inválido: asegura el placeholder, oculta imagen rota
-            img.onerror = function() {
-                const placeholder = this.parentElement.querySelector('.portfolio-placeholder');
+            const handleError = () => {
+                const placeholder = img.parentElement.querySelector('.portfolio-placeholder');
                 if (placeholder) placeholder.style.display = 'block';
-                this.style.display = 'none';
+                img.style.opacity = '0';
             };
+
+            // Event Listeners seguros para móviles
+            img.addEventListener('load', handleLoad);
+            img.addEventListener('error', handleError);
 
             // Validar inmediatamente si el navegador ya procesó la imagen en caché
             if (img.complete) {
-                img.naturalWidth > 0 ? img.onload() : img.onerror();
+                img.naturalWidth > 0 ? handleLoad() : handleError();
             }
 
             // NUEVO: Lógica de Zoom al hacer click (Modal de previsualización para Portafolio)
