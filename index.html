@@ -78,10 +78,21 @@
             position: relative;
             padding-top: 65px; /* Espacio reservado para la barra superior/banner global */
             box-sizing: border-box;
+            
+            /* Bloquear la selección y remarcado de texto global */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
 
         /* Prevención de deformación de iconos en Safari/Chrome */
         svg { flex-shrink: 0; }
+        
+        img, video { 
+            -webkit-user-drag: none; /* Evita arrastrar imágenes */
+        }
 
         /* --- FONDO GALAXY STARFIELD (CLEAN & CINEMATIC) --- */
         body {
@@ -1191,35 +1202,35 @@
             <!-- Sidebar / Navegación Inferior en Móviles -->
             <nav class="sidebar glass">
                 <!-- Avatar Izquierdo Eliminado Visualmente (Oculto para no romper HTML) -->
-                <div class="brand-icon icon-glass-fx circle" title="Perfil" style="border-width: 2px !important; display: none !important;">
+                <div class="brand-icon icon-glass-fx circle" style="border-width: 2px !important; display: none !important;">
                     <img src="https://i.imgur.com/M5DW0HN.png" alt="S Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 
-                <div class="nav-item active" id="homeBtn" title="Dashboard">
+                <div class="nav-item active" id="homeBtn">
                     <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
                         <img src="https://i.imgur.com/EXB5d3I.png" alt="Home">
                     </div>
                 </div>
                 
-                <div class="nav-item" id="folderBtn" title="Archivos">
+                <div class="nav-item" id="folderBtn">
                     <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
                         <img src="https://i.imgur.com/v1dAhMt.png" alt="Archivos">
                     </div>
                 </div>
                 
-                <div class="nav-item" id="pcbackBtn" title="PCback Gratuitos">
+                <div class="nav-item" id="pcbackBtn">
                     <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
                         <img src="https://i.imgur.com/v1dAhMt.png" alt="PCback Gratuitos">
                     </div>
                 </div>
                 
-                <a href="https://xat.com/xatframe" target="_blank" class="nav-item" title="Saturno" style="margin-top: auto; margin-bottom: 15px;">
+                <a href="https://xat.com/xatframe" target="_blank" class="nav-item" style="margin-top: auto; margin-bottom: 15px;">
                     <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
                         <img src="https://i.imgur.com/DYxJosA.png" alt="Saturno">
                     </div>
                 </a>
                 
-                <a href="https://xat.com/ayuda" target="_blank" class="nav-item" title="Ayuda" style="margin-top: 0; margin-bottom: 30px;">
+                <a href="https://xat.com/ayuda" target="_blank" class="nav-item" style="margin-top: 0; margin-bottom: 30px;">
                     <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
                         <img src="https://i.imgur.com/8AcK04v.png" alt="Ayuda">
                     </div>
@@ -1458,7 +1469,7 @@
                     <div class="mini-profile-container">
                         <div class="mini-profile-content">
                             <!-- ===== CAMBIAR LINK DE PERFIL EAM AQUÍ ===== -->
-                            <a href="https://xat.com/2000s" target="_blank" class="mini-profile-link" title="Perfil Eam">
+                            <a href="https://xat.com/2000s" target="_blank" class="mini-profile-link">
                                 <img src="https://i.imgur.com/4iizuQW.jpeg" alt="Eam" class="mini-profile-img">
                             </a>
                             <div class="mp-main-info">
@@ -1907,7 +1918,7 @@
                             <img src="${imgUrl}" class="download-thumb" alt="Pstyle Preview" loading="lazy">
                             <div class="download-btn-overlay" style="justify-content: space-between;">
                                 <span class="copy-feedback" style="opacity: 0; color: #fff; font-size: 0.75rem; font-weight: bold; font-family: var(--font-body); transition: opacity 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none;">Copiado</span>
-                                <button class="copy-url-btn icon-glass-fx circle" data-url="${imgUrl}" style="width: 36px; height: 36px; padding: 6px; border: none; background: transparent;" title="Copiar URL">
+                                <button class="copy-url-btn icon-glass-fx circle" data-url="${imgUrl}" style="width: 36px; height: 36px; padding: 6px; border: none; background: transparent;">
                                     <img src="https://i.imgur.com/tPZigqF.png" style="width: 100%; height: 100%; object-fit: contain;" alt="Copiar">
                                 </button>
                             </div>
@@ -2041,7 +2052,7 @@
                             <img src="${imgUrl}" class="pcback-thumb" alt="PCback Preview" loading="lazy">
                             <div class="download-btn-overlay" style="justify-content: space-between;">
                                 <span class="copy-feedback" style="opacity: 0; color: #fff; font-size: 0.75rem; font-weight: bold; font-family: var(--font-body); transition: opacity 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none;">Copiado</span>
-                                <button class="copy-url-btn icon-glass-fx circle" data-url="${imgUrl}" style="width: 36px; height: 36px; padding: 6px; border: none; background: transparent;" title="Copiar URL">
+                                <button class="copy-url-btn icon-glass-fx circle" data-url="${imgUrl}" style="width: 36px; height: 36px; padding: 6px; border: none; background: transparent;">
                                     <img src="https://i.imgur.com/tPZigqF.png" style="width: 100%; height: 100%; object-fit: contain;" alt="Copiar">
                                 </button>
                             </div>
