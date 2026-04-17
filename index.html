@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Three.js para el Saturno Holográfico -->
+    <!-- Three.js para el Saturno Holográfico y el Fluido Orgánico -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
@@ -57,12 +57,16 @@
         }
         /* End www.Cursors-4U.com Code */
 
+        html {
+            background-color: #000000; /* CRÍTICO: Elimina el flash blanco nativo del navegador */
+        }
+
         html, body {
             height: 100%;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: #000000 !important; /* CRÍTICO: Fondo base oscuro sólido */
             color: var(--text-main);
             font-family: var(--font-body);
             height: 100vh;
@@ -512,7 +516,7 @@
         .gallery-section { height: 280px; perspective: 1200px; display: flex; align-items: center; justify-content: center; margin-top: 30px; }
         .carousel { width: 140px; height: 180px; position: relative; transform-style: preserve-3d; animation: rotate 25s infinite linear; }
         .gallery-section:hover .carousel { animation-play-state: paused; }
-        .carousel-item { position: absolute; width: 140px; height: 180px; left: 0; top: 0; background: #000; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden; box-shadow: 0 0 15px rgba(255,255,255,0.05); cursor: pointer; transition: transform 0.3s; }
+        .carousel-item { position: absolute; width: 140px; height: 180px; left: 0; top: 0; background: #000; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden; box-shadow: 0 0 15px rgba(255,255,255,0.05); cursor: default; transition: transform 0.3s; }
         .carousel-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
         .carousel-item:hover img { opacity: 1; box-shadow: 0 0 20px #fff; }
         .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(260px); } .carousel-item:nth-child(2) { transform: rotateY(45deg) translateZ(260px); } .carousel-item:nth-child(3) { transform: rotateY(90deg) translateZ(260px); } .carousel-item:nth-child(4) { transform: rotateY(135deg) translateZ(260px); } .carousel-item:nth-child(5) { transform: rotateY(180deg) translateZ(260px); } .carousel-item:nth-child(6) { transform: rotateY(225deg) translateZ(260px); } .carousel-item:nth-child(7) { transform: rotateY(270deg) translateZ(260px); } .carousel-item:nth-child(8) { transform: rotateY(315deg) translateZ(260px); }
@@ -925,29 +929,13 @@
             -webkit-text-fill-color: transparent;
             animation: silverWave 8s ease-in-out infinite;
         }
-        /* 🔧 PERSONALIZACIÓN:
-        Ajusta estos HEX para cambiar el look del metal:
-        #ffffff → brillo fuerte
-        #dcdcdc → plata clara
-        #a8a8a8 → tono medio
-        #6e6e6e / #5a5a5a → sombras profundas
-        */
+        
         @keyframes silverWave {
-            0% {
-                background-position: 0% 50%;
-            }
-            25% {
-                background-position: 50% 40%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            75% {
-                background-position: 50% 60%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 40%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 60%; }
+            100% { background-position: 0% 50%; }
         }
         
         .mp-line2 { grid-column: 2; grid-row: 2; font-size: var(--mp-sub-size); color: #888; font-weight: 500; margin-top: 2px; }
@@ -960,45 +948,7 @@
         @keyframes widget-pulse-heart { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
         @keyframes widget-float-up { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.5); } }
 
-        /* --- CORRECCIONES RESPONSIVE MÓVIL (CRÍTICO) --- */
-        @media (max-width: 768px) {
-            /* Eliminar glow del footer en móvil */
-            .render-shadow {
-                display: none !important;
-                box-shadow: none !important;
-                filter: none !important;
-            }
-            .render-img {
-                filter: none !important;
-            }
-
-            /* Icono "?" (y demás) alineados correctamente */
-            .sidebar .nav-item {
-                margin: 0 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-            }
-
-            /* Calendario funcional y encima de todo sin mover su lugar base */
-            .calendar-card {
-                position: relative !important;
-                z-index: 9999 !important;
-            }
-            .calendar-popup {
-                position: absolute !important;
-                z-index: 9999 !important;
-                /* Abrir hacia arriba para evitar colisión con el menú inferior */
-                top: auto !important;
-                bottom: calc(100% + 15px) !important;
-                transform: translateX(-50%) translateY(10px) !important;
-            }
-            .calendar-popup.open {
-                transform: translateX(-50%) translateY(0) !important;
-            }
-        }
-        
-        /* ESTILO NUEVO GRADIENTE DEBAJO DEL RENDER (FOOTER) - OBJETIVO 5 */
+        /* ESTILO NUEVO GRADIENTE DEBAJO DEL RENDER (FOOTER) */
         .footer-render-wrapper {
             position: relative;
             display: flex;
@@ -1013,7 +963,9 @@
             left: 0;
             width: 100%;
             height: 30%; /* Altura del fundido */
-            background: linear-gradient(to top, #000000 0%, transparent 100%);
+            background: transparent;
+            background-image: none;
+            display: none;
             pointer-events: none;
             z-index: 5;
         }
@@ -1054,8 +1006,6 @@
         /* =========================================
            CORRECCIONES FINALES (HUECO Y ZOOM AVATAR)
            ========================================= */
-        /* Eliminar hueco superior desplazando los contenedores hacia arriba (margin negativo).
-           Mantenemos el padding intacto para que el avatar tenga espacio para escalar sin cortarse. */
         .sidebar {
             margin-top: -40px !important;
             padding-top: 40px !important;
@@ -1069,9 +1019,215 @@
             padding-top: 30px !important;
         }
 
+        /* ========================================================
+           CSS AÑADIDO: FLUIDO ORGÁNICO INTEGRADO (codigo1.txt)
+           ======================================================== */
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed; 
+            top: 0;
+            left: 0;
+            /* Modificado a -1 para ponerlo exacto detrás de tu UI interactiva pero encima de los fondos opacos */
+            z-index: -1; 
+            pointer-events: none; 
+            opacity: 0; /* Inicia completamente invisible revelando el fondo base oscuro natural */
+            transition: opacity 1.2s ease-out; /* Transición súper fluida, de 1.2s sin saltos */
+            will-change: opacity; /* Optimizado para delegar la opacidad a la GPU */
+        }
+        #canvas-container.ready {
+            opacity: 1; /* Se ilumina orgánicamente sin alteraciones de brillo bruscas */
+        }
+
+        #mini-open-btn {
+            position: fixed;
+            top: 155px;
+            left: 0;
+            width: 34px;
+            height: 34px;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            z-index: 2147483647;
+            pointer-events: auto;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        #mini-open-btn.visible { display: flex; }
+        #mini-open-btn:hover { background: rgba(45, 45, 45, 0.7); }
+
+        #main-panel {
+            position: fixed; 
+            top: 155px; 
+            left: 0; 
+            width: max-content;  
+            height: 34px;   
+            box-sizing: border-box; 
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 0 10px 0 15px; 
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            transition: max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            opacity: 1;
+            max-width: calc(100vw - 20px); 
+            overflow-x: auto;
+            overflow-y: hidden; 
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            scrollbar-width: none; 
+            z-index: 2147483647; 
+            pointer-events: auto;
+        }
+        #main-panel::-webkit-scrollbar { display: none; }
+        #main-panel.hidden { max-width: 0; opacity: 0; padding: 0; border-width: 0; pointer-events: none; }
+
+        #main-panel .palette-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            flex-shrink: 0;
+        }
+        #main-panel .palette-btn:hover { transform: scale(1.2); border-color: #fff; }
+        #main-panel .palette-label { color: #ddd; font-size: 11px; margin-right: 5px; user-select: none; font-weight: bold; }
+
+        #close-btn {
+            margin-left: auto; 
+            position: sticky;
+            right: 0;
+            z-index: 10;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            transition: background 0.2s, transform 0.2s;
+            flex-shrink: 0; 
+        }
+        #close-btn:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); }
+
+        #main-panel .control-group { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #ddd; user-select: none; height: 100%; flex-shrink: 0; }
+        #main-panel input[type="range"] { width: 70px; height: 10px; accent-color: #fff; cursor: pointer; flex-shrink: 0; }
+        #main-panel input[type="checkbox"] { cursor: pointer; accent-color: #fff; width: 14px; height: 14px; flex-shrink: 0; }
+        #main-panel .separator { width: 1px; height: 18px; background: rgba(255,255,255,0.25); margin: 0 2px; flex-shrink: 0; }
+
+        /* CRÍTICO: Transición suave desde el color base oscuro sin parpadeos */
+        body {
+            opacity: 0;
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: opacity;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+
+    <!-- ========================================================
+         INICIO CÓDIGO AÑADIDO: INTERFAZ FLUIDO ORGÁNICO
+         ======================================================== -->
+    <div id="mini-open-btn" title="Mostrar Panel de Controles">≡</div>
+    <div id="main-panel">
+        <div class="control-group" id="palettes-container">
+            <div class="palette-label">Paletas:</div>
+        </div>
+        <div class="separator"></div>
+        <div class="control-group" title="Desplazamiento / uTime">
+            <label for="ctrl-offset">Desplaz.</label>
+            <input type="range" id="ctrl-offset" min="0" max="2" step="0.01">
+        </div>
+        <div class="control-group" title="Intensidad de Mezcla">
+            <label for="ctrl-contrast">Contraste</label>
+            <input type="range" id="ctrl-contrast" min="0" max="5" step="0.01">
+        </div>
+        <div class="separator"></div>
+        <div class="control-group">
+            <label for="ctrl-speed">Velocidad</label>
+            <input type="range" id="ctrl-speed" min="0" max="1" step="0.01">
+        </div>
+        <div class="control-group" title="Zoom del Shader">
+            <label for="ctrl-elevation">Altura</label>
+            <input type="range" id="ctrl-elevation" min="0" max="5" step="0.01">
+        </div>
+        <div class="control-group" title="Amplitud de la Onda">
+            <label for="ctrl-frequency">Detalle</label>
+            <input type="range" id="ctrl-frequency" min="0.05" max="1" step="0.01">
+        </div>
+        <div class="separator"></div>
+        <div class="control-group" title="Activa un patrón topográfico estilizado">
+            <label for="ctrl-wireframe">Malla</label>
+            <input type="checkbox" id="ctrl-wireframe">
+        </div>
+        <div id="close-btn" title="Ocultar controles">❯</div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script type="x-shader/x-vertex" id="waveVertexShader">
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = vec4(position, 1.0); 
+        }
+    </script>
+    <script type="x-shader/x-fragment" id="waveFragmentShader">
+        uniform vec2 uResolution;
+        uniform float uTime;
+        uniform vec3 uColor1;
+        uniform vec3 uColor2;
+        uniform vec3 uColor3;
+        uniform float uColorOffset;
+        uniform float uColorMultiplier;
+        uniform float uSpeed;
+        uniform float uElevation;
+        uniform float uFrequency;
+        uniform float uWireframe;
+        varying vec2 vUv;
+        void main() {
+            vec2 uv = gl_FragCoord.xy / uResolution.xy;
+            uv.x *= uResolution.x / uResolution.y;
+            float time = uTime * uColorOffset * 0.5;
+            vec2 p = uv * (uElevation * 2.0 + 1.0);
+            for(float i = 1.0; i < 5.0; i++) {
+                p.x += (uFrequency) * sin(i * p.y + time + uSpeed * i);
+                p.y += (uFrequency) * cos(i * p.x + time + uSpeed * i);
+            }
+            float f = sin(p.x + p.y + time) * 0.5 + 0.5;
+            f = pow(f, uColorMultiplier + 0.1); 
+            if (uWireframe > 0.5) {
+                f = abs(sin(f * 20.0));
+                f = smoothstep(0.0, 0.8, f);
+            }
+            vec3 color = mix(uColor1, uColor2, smoothstep(0.0, 0.4, f));
+            color = mix(color, uColor3, smoothstep(0.4, 1.0, f));
+            gl_FragColor = vec4(color, 1.0);
+        }
+    </script>
+    <!-- ========================================================
+         FIN CÓDIGO AÑADIDO: INTERFAZ FLUIDO ORGÁNICO
+         ======================================================== -->
 
     <!-- TOP NAVIGATION BAR -->
     <nav class="top-navbar">
@@ -1322,44 +1478,32 @@
                             <!-- Tarjeta 1 -->
                             <div class="portfolio-inline-card">
                                 <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
-                                <video class="portfolio-inline-video" muted loop playsinline>
-                                    <source src="portafolio1.mp4" type="video/mp4">
-                                </video>
+                                <img src="https://i.imgur.com/xz646jX.gif" class="portfolio-inline-video" alt="Portafolio Animado 1">
                             </div>
                             <!-- Tarjeta 2 -->
                             <div class="portfolio-inline-card">
                                 <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
-                                <video class="portfolio-inline-video" muted loop playsinline>
-                                    <source src="portafolio2.mp4" type="video/mp4">
-                                </video>
+                                <img src="https://i.imgur.com/7NHqzzO.gif" class="portfolio-inline-video" alt="Portafolio Animado 2">
                             </div>
                             <!-- Tarjeta 3 -->
                             <div class="portfolio-inline-card">
                                 <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
-                                <video class="portfolio-inline-video" muted loop playsinline>
-                                    <source src="portafolio3.mp4" type="video/mp4">
-                                </video>
+                                <img src="https://i.imgur.com/b62MIVq.gif" class="portfolio-inline-video" alt="Portafolio Animado 3">
                             </div>
                             <!-- Tarjeta 4 -->
                             <div class="portfolio-inline-card">
                                 <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
-                                <video class="portfolio-inline-video" muted loop playsinline>
-                                    <source src="portafolio4.mp4" type="video/mp4">
-                                </video>
+                                <img src="https://i.imgur.com/2d6hZtV.gif" class="portfolio-inline-video" alt="Portafolio Animado 4">
                             </div>
                             <!-- Tarjeta 5 -->
                             <div class="portfolio-inline-card">
                                 <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
-                                <video class="portfolio-inline-video" muted loop playsinline>
-                                    <source src="portafolio5.mp4" type="video/mp4">
-                                </video>
+                                <img src="https://i.imgur.com/YLfHmTf.gif" class="portfolio-inline-video" alt="Portafolio Animado 5">
                             </div>
                             <!-- Tarjeta 6 -->
                             <div class="portfolio-inline-card">
                                 <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
-                                <video class="portfolio-inline-video" muted loop playsinline>
-                                    <source src="portafolio6.mp4" type="video/mp4">
-                                </video>
+                                <img src="https://i.imgur.com/CQd5NB1.gif" class="portfolio-inline-video" alt="Portafolio Animado 6">
                             </div>
                         </div>
 
@@ -1668,9 +1812,11 @@
         if(bottomVideo) {
             bottomVideo.addEventListener('play', () => {
                 if(videoPlayPauseIconImg) videoPlayPauseIconImg.src = ICON_PAUSE;
+                if(bottomVideoOverlay) bottomVideoOverlay.classList.add('hidden');
             });
             bottomVideo.addEventListener('pause', () => {
                 if(videoPlayPauseIconImg) videoPlayPauseIconImg.src = ICON_PLAY;
+                if(bottomVideoOverlay) bottomVideoOverlay.classList.remove('hidden');
             });
         }
 
@@ -1695,9 +1841,12 @@
             });
         }
 
+        // Clics y zoom desactivados para la galería 3D flotante
+        /*
         document.querySelectorAll('.carousel-item').forEach(item => {
             item.addEventListener('click', () => { lightboxImg.src = item.querySelector('img').src; lightbox.classList.add('active'); });
         });
+        */
 
         // --- NAVEGACIÓN DINÁMICA: HOME Y PORTAFOLIO IN-PLACE ---
         const homeBtn = document.getElementById('homeBtn');
@@ -2256,6 +2405,321 @@
                 }
             });
         }
+
+        // ========================================================
+        // INICIO SCRIPT AÑADIDO: FLUIDO ORGÁNICO INTEGRADO 
+        // ========================================================
+        (function() {
+            let sceneFluid, cameraFluid, rendererFluid, materialFluid, meshFluid;
+            let clockFluid = new THREE.Clock();
+
+            const STORAGE_KEY = 'shader_bg_config_xat';
+
+            const defaultConfig = {
+                color1: '#001f3f', color2: '#0074d9', color3: '#7fdbff',
+                speed: 0.5, elevation: 1.0, frequency: 0.5, colorOffset: 0.8, colorMultiplier: 5.0, 
+                wireframe: false, isPanelOpen: false 
+            };
+
+            const palettes = [
+                ['#001f3f', '#0074d9', '#7fdbff'], ['#2a0800', '#b22222', '#ff8c00'],
+                ['#0d0221', '#ff007f', '#00f0ff'], ['#002b18', '#007f5f', '#aacc00'],
+                ['#15062a', '#91165b', '#ff8822'], ['#000000', '#777777', '#ffffff']
+            ];
+
+            let configFluid = { ...defaultConfig };
+            let saveTimeoutFluid = null;
+
+            const controlsList = [
+                { id: 'ctrl-offset', key: 'colorOffset', type: 'float', uniform: 'uColorOffset' },
+                { id: 'ctrl-contrast', key: 'colorMultiplier', type: 'float', uniform: 'uColorMultiplier' },
+                { id: 'ctrl-speed', key: 'speed', type: 'float', uniform: 'uSpeed' },
+                { id: 'ctrl-elevation', key: 'elevation', type: 'float', uniform: 'uElevation' },
+                { id: 'ctrl-frequency', key: 'frequency', type: 'float', uniform: 'uFrequency' },
+                { id: 'ctrl-wireframe', key: 'wireframe', type: 'bool', uniform: 'uWireframe' }
+            ];
+
+            function loadConfig() {
+                try {
+                    const savedConfig = localStorage.getItem(STORAGE_KEY);
+                    if (savedConfig) configFluid = { ...configFluid, ...JSON.parse(savedConfig) };
+                } catch (e) { console.error("Error al cargar config", e); }
+            }
+
+            function requestSave() {
+                if (saveTimeoutFluid) clearTimeout(saveTimeoutFluid);
+                saveTimeoutFluid = setTimeout(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(configFluid)); }, 500); 
+            }
+
+            function initFluid() {
+                loadConfig();
+                const container = document.getElementById('canvas-container');
+
+                sceneFluid = new THREE.Scene();
+                cameraFluid = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+                rendererFluid = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                rendererFluid.setClearColor(0x000000, 0);
+                rendererFluid.setSize(window.innerWidth, window.innerHeight);
+                rendererFluid.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+                container.appendChild(rendererFluid.domElement);
+
+                rendererFluid.render(sceneFluid, cameraFluid);
+
+                const geometry = new THREE.PlaneGeometry(2, 2);
+                materialFluid = new THREE.ShaderMaterial({
+                    vertexShader: document.getElementById('waveVertexShader').textContent,
+                    fragmentShader: document.getElementById('waveFragmentShader').textContent,
+                    uniforms: {
+                        uTime: { value: 0 },
+                        uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                        uSpeed: { value: configFluid.speed },
+                        uElevation: { value: configFluid.elevation },
+                        uFrequency: { value: configFluid.frequency },
+                        uColor1: { value: new THREE.Color(configFluid.color1) },
+                        uColor2: { value: new THREE.Color(configFluid.color2) },
+                        uColor3: { value: new THREE.Color(configFluid.color3) },
+                        uColorOffset: { value: configFluid.colorOffset },
+                        uColorMultiplier: { value: configFluid.colorMultiplier },
+                        uWireframe: { value: configFluid.wireframe ? 1.0 : 0.0 }
+                    },
+                    depthWrite: false
+                });
+
+                meshFluid = new THREE.Mesh(geometry, materialFluid);
+                sceneFluid.add(meshFluid);
+
+                buildPaletteBar();
+                setupUIValues();
+
+                window.addEventListener('resize', onWindowResizeFluid, { passive: true });
+                
+                materialFluid.uniforms.uTime.value = 0.0001;
+                
+                // Forzar precompilación síncrona del shader para evitar parpadeos "flashes"
+                if (rendererFluid.compile) rendererFluid.compile(sceneFluid, cameraFluid);
+                rendererFluid.render(sceneFluid, cameraFluid);
+                
+                animateFluid();
+                setInterval(pollDOMAndSync, 50); 
+                
+                // El secreto Senior: Esperar dos frames reales (flush a pantalla) antes de revelar
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        const container = document.getElementById('canvas-container');
+                        if (container) container.classList.add('ready');
+                    });
+                });
+            }
+
+            function buildPaletteBar() {
+                const container = document.getElementById('palettes-container');
+                palettes.forEach(p => {
+                    const btn = document.createElement('div');
+                    btn.className = 'palette-btn';
+                    btn.style.background = `linear-gradient(135deg, ${p[0]} 0%, ${p[1]} 50%, ${p[2]} 100%)`;
+                    ['click', 'pointerdown', 'touchstart'].forEach(evt => {
+                        btn.addEventListener(evt, (e) => {
+                            e.stopPropagation(); e.preventDefault();
+                            configFluid.color1 = p[0]; configFluid.color2 = p[1]; configFluid.color3 = p[2];
+                            if (materialFluid) {
+                                materialFluid.uniforms.uColor1.value.set(p[0]);
+                                materialFluid.uniforms.uColor2.value.set(p[1]);
+                                materialFluid.uniforms.uColor3.value.set(p[2]);
+                            }
+                            requestSave();
+                        }, { capture: true });
+                    });
+                    container.appendChild(btn);
+                });
+            }
+
+            function setupUIValues() {
+                const openBtn = document.getElementById('mini-open-btn');
+                const mainPanel = document.getElementById('main-panel');
+                const closeBtn = document.getElementById('close-btn');
+
+                const updateVisibility = () => {
+                    if (configFluid.isPanelOpen) { mainPanel.classList.remove('hidden'); openBtn.classList.remove('visible'); } 
+                    else { mainPanel.classList.add('hidden'); openBtn.classList.add('visible'); }
+                };
+                updateVisibility();
+
+                const togglePanel = (e, targetState) => {
+                    e.stopPropagation(); e.preventDefault();
+                    configFluid.isPanelOpen = targetState !== undefined ? targetState : !configFluid.isPanelOpen;
+                    requestSave(); updateVisibility();
+                };
+
+                openBtn.addEventListener('click', (e) => togglePanel(e, true), { capture: true });
+                closeBtn.addEventListener('click', (e) => togglePanel(e, false), { capture: true });
+
+                controlsList.forEach(c => {
+                    const el = document.getElementById(c.id);
+                    if (el) {
+                        if (c.type === 'bool') el.checked = !!configFluid[c.key];
+                        else el.value = configFluid[c.key];
+                    }
+                });
+            }
+
+            function pollDOMAndSync() {
+                if (!materialFluid) return;
+                let changesDetected = false;
+
+                controlsList.forEach(c => {
+                    const el = document.getElementById(c.id);
+                    if (!el) return;
+
+                    if (c.type === 'float') {
+                        const val = parseFloat(el.value);
+                        if (!isNaN(val) && val !== configFluid[c.key]) {
+                            configFluid[c.key] = val;
+                            materialFluid.uniforms[c.uniform].value = val;
+                            changesDetected = true;
+                        }
+                    } else if (c.type === 'bool') {
+                        const val = el.checked;
+                        if (val !== configFluid[c.key]) {
+                            configFluid[c.key] = val;
+                            if (materialFluid.uniforms[c.uniform]) materialFluid.uniforms[c.uniform].value = val ? 1.0 : 0.0; 
+                            changesDetected = true;
+                        }
+                    }
+                });
+
+                if (changesDetected) {
+                    requestSave();
+                    if(rendererFluid && sceneFluid && cameraFluid) rendererFluid.render(sceneFluid, cameraFluid);
+                }
+            }
+
+            function onWindowResizeFluid() {
+                if(!rendererFluid || !materialFluid) return;
+                rendererFluid.setSize(window.innerWidth, window.innerHeight);
+                materialFluid.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+            }
+
+            function animateFluid() {
+                requestAnimationFrame(animateFluid);
+                if (!materialFluid || !rendererFluid) return;
+                pollDOMAndSync();
+                materialFluid.uniforms.uTime.value = clockFluid.getElapsedTime();
+                rendererFluid.render(sceneFluid, cameraFluid);
+            }
+
+            // Iniciar de forma segura sin sobreescribir el window.onload actual de ser necesario
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                setTimeout(initFluid, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", initFluid);
+            }
+
+            window.addEventListener('load', () => {
+                const panel = document.getElementById('main-panel');
+                const btn = document.getElementById('mini-open-btn');
+
+                // Buscar el elemento EXACTO que contiene el texto "PC BACK"
+                const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, null, false);
+
+                let target = null;
+
+                while (walker.nextNode()) {
+                    const el = walker.currentNode;
+
+                    if (el.children.length === 0 && el.textContent.trim() === "PC BACK") {
+                        target = el;
+                        break;
+                    }
+                }
+
+                if (target) {
+                    const rect = target.getBoundingClientRect();
+
+                    const offset = 6; // separación EXACTA mínima debajo del texto
+
+                    const newTop = rect.bottom + offset;
+
+                    if (panel) panel.style.top = newTop + 'px';
+                    if (btn) btn.style.top = newTop + 'px';
+
+                    if (panel) panel.style.top = (parseFloat(panel.style.top) + 100) + 'px';
+                    if (btn) btn.style.top = (parseFloat(btn.style.top) + 100) + 'px';
+                }
+            });
+        })();
+        // ========================================================
+        // FIN SCRIPT AÑADIDO
+        // ========================================================
+
+        window.addEventListener('load', () => {
+            requestAnimationFrame(() => {
+                document.body.classList.add('loaded');
+            });
+        });
+
+        window.addEventListener('load', () => {
+            const panel = document.getElementById('main-panel');
+            const btn = document.getElementById('mini-open-btn');
+
+            const extraOffset = 100;
+
+            if (panel) {
+                const currentTop = panel.offsetTop;
+                panel.style.top = (currentTop + extraOffset) + 'px';
+            }
+
+            if (btn) {
+                const currentTopBtn = btn.offsetTop;
+                btn.style.top = (currentTopBtn + extraOffset) + 'px';
+            }
+        });
+
+        window.addEventListener('load', () => {
+            const panel = document.getElementById('main-panel');
+            const btn = document.getElementById('mini-open-btn');
+
+            const move = 100;
+
+            if (panel) {
+                const rect = panel.getBoundingClientRect();
+                const fromBottom = window.innerHeight - rect.top;
+
+                panel.style.top = 'auto';
+                panel.style.bottom = (fromBottom - move) + 'px';
+            }
+
+            if (btn) {
+                const rectBtn = btn.getBoundingClientRect();
+                const fromBottomBtn = window.innerHeight - rectBtn.top;
+
+                btn.style.top = 'auto';
+                btn.style.bottom = (fromBottomBtn - move) + 'px';
+            }
+        });
+
+        // --- LÓGICA DINÁMICA DE PORTAFOLIO ---
+        // Detecta automáticamente si el GIF es válido y gestiona el placeholder
+        document.querySelectorAll('.portfolio-inline-video').forEach(img => {
+            // Si el GIF carga correctamente: oculta placeholder, muestra GIF permanentemente
+            img.onload = function() {
+                const placeholder = this.parentElement.querySelector('.portfolio-placeholder');
+                if (placeholder) placeholder.style.display = 'none';
+                this.style.opacity = '1';
+            };
+
+            // Si no hay GIF o el src es inválido: asegura el placeholder, oculta imagen rota
+            img.onerror = function() {
+                const placeholder = this.parentElement.querySelector('.portfolio-placeholder');
+                if (placeholder) placeholder.style.display = 'block';
+                this.style.display = 'none';
+            };
+
+            // Validar inmediatamente si el navegador ya procesó la imagen en caché
+            if (img.complete) {
+                img.naturalWidth > 0 ? img.onload() : img.onerror();
+            }
+        });
     </script>
 </body>
 </html>
