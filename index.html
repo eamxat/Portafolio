@@ -1475,6 +1475,23 @@
 
                         <!-- Grid Principal de Portafolio -->
                         <div class="portfolio-inline-grid">
+                            
+                            <!-- 
+                            ========================================================================
+                            TUTORIAL: ¿CÓMO AÑADIR MÁS RECUADROS (GIFS) AL PORTAFOLIO?
+                            ========================================================================
+                            Para añadir más recuadros sin romper el diseño, simplemente copia todo 
+                            el bloque de código de una "Tarjeta" (desde el <div class="portfolio-inline-card"> 
+                            hasta su </div> de cierre) y pégalo justo debajo de la última tarjeta.
+
+                            Asegúrate de cambiar los enlaces de las imágenes (src="..."):
+                            1. El primer <img> es la imagen de previsualización fija (placeholder).
+                            2. El segundo <img> es el GIF animado.
+                            
+                            El diseño en cuadrícula se ajustará automáticamente a las nuevas tarjetas.
+                            ========================================================================
+                            -->
+
                             <!-- Tarjeta 1 -->
                             <div class="portfolio-inline-card">
                                 <img src="https://i.imgur.com/l1pJQ2Q.png" class="portfolio-placeholder" alt="Placeholder">
@@ -1576,6 +1593,7 @@
                                     <img src="https://i.ibb.co/LdncmgG0/a-p1pwn-00c000-hat3-w0i592395ic-20.webp" alt="Pawn" class="mp-pawn-icon">
                                     <!-- ===== CAMBIAR NOMBRE AQUÍ (Eam) ===== -->
                                     <span class="mp-name-eam silver-text"> : ̗̀𝑬𝒂𝒎⁹⁶</span>
+                                    <img src="https://i.imgur.com/zkCzsHP.png" alt="Icono extra" style="width: 15px; height: 15px; margin-left: 5px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));">
                                 </div>
                                 <div class="mp-line2">𝙭𝙖𝙩𝙨𝙥𝙖𝙘𝙚 𝙨𝙚𝙡𝙡𝙚𝙧</div>
                             </div>
@@ -2026,7 +2044,18 @@
         // ------------------------------------------------------------------
         const folderBtn = document.getElementById('folderBtn'), downloadsModal = document.getElementById('downloadsModal');
 
-        // Pstyle dummy URLs for gallery
+        // ========================================================================
+        // TUTORIAL: ¿CÓMO AÑADIR MÁS IMÁGENES A LA GALERÍA PSTYLE?
+        // ========================================================================
+        // Para añadir más imágenes, simplemente agrega la URL de la nueva imagen
+        // dentro de esta lista (array) `pstyleImages`. 
+        // 
+        // REGLAS:
+        // 1. La URL debe ir entre comillas "".
+        // 2. Debes poner una coma (,) al final de cada línea, excepto en la última.
+        // El código generará los recuadros automáticamente sin romper el diseño.
+        // Ejemplo de adición: "https://i.imgur.com/NuevaImagen.png",
+        // ========================================================================
         const pstyleImages = [
             "https://xatimg.com/image/p4bLGOzDTK0y.png",
             "https://xatimg.com/image/p4bLGOzDTK0y.png",
@@ -2153,6 +2182,14 @@
         // ------------------------------------------------------------------
         const pcbackBtn = document.getElementById('pcbackBtn'), pcbackModal = document.getElementById('pcbackModal');
 
+        // ========================================================================
+        // TUTORIAL: ¿CÓMO AÑADIR MÁS IMÁGENES A LA GALERÍA PCBACK?
+        // ========================================================================
+        // Funciona exactamente igual que la galería Pstyle. Añade la URL de
+        // tu nueva imagen entre comillas y separada por una coma dentro de la lista.
+        // El código y el CSS Grid se encargarán de acomodarlas perfectamente.
+        // Ejemplo: "https://i.imgur.com/TuPcbackNuevo.png",
+        // ========================================================================
         const pcbackImagesList = [
             "https://xatimg.com/image/p4bLGOzDTK0y.png",
             "https://xatimg.com/image/p4bLGOzDTK0y.png",
@@ -2719,6 +2756,41 @@
             if (img.complete) {
                 img.naturalWidth > 0 ? img.onload() : img.onerror();
             }
+
+            // NUEVO: Lógica de Zoom al hacer click (Modal de previsualización para Portafolio)
+            img.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                const staleOverlay = document.getElementById('portfolio-zoom-overlay');
+                if(staleOverlay) staleOverlay.remove();
+
+                const overlay = document.createElement('div');
+                overlay.id = 'portfolio-zoom-overlay';
+                overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999999; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; cursor: pointer;';
+
+                const zoomImg = document.createElement('img');
+                zoomImg.src = this.src;
+                zoomImg.style.cssText = 'max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 12px; box-shadow: 0 0 50px rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); transform: scale(0.9); transition: transform 0.3s ease;';
+
+                overlay.appendChild(zoomImg);
+                document.body.appendChild(overlay);
+
+                void overlay.offsetWidth; // Forzar reflow para animación
+
+                overlay.style.opacity = '1';
+                zoomImg.style.transform = 'scale(1)';
+
+                // Cerrar y eliminar al hacer click de nuevo
+                overlay.addEventListener('click', function() {
+                    overlay.style.opacity = '0';
+                    zoomImg.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        if (document.body.contains(overlay)) {
+                            document.body.removeChild(overlay);
+                        }
+                    }, 300);
+                });
+            });
         });
     </script>
 </body>
