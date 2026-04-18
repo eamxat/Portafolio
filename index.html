@@ -1143,6 +1143,46 @@
         .window-dot {
             display: none;
         }
+
+        /* CSS AÑADIDO: Mover render del footer */
+        .footer-render-wrapper,
+        #canvas-container {
+            bottom: -10px;
+        }
+
+        /* CSS AÑADIDO: Fix Safari iOS y Botón X en móvil */
+        @media (max-width: 768px) {
+            .calendar,
+            .calendar-modal,
+            .calendar-container,
+            .calendar-popup {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                max-height: 90vh;
+                overflow-y: auto;
+                z-index: 9999;
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .calendar-close-btn {
+                position: absolute;
+                top: 10px;
+                right: 12px;
+                font-size: 22px;
+                color: white;
+                cursor: pointer;
+                z-index: 10000;
+            }
+        }
+        
+        /* Ocultar en desktop */
+        @media (min-width: 769px) {
+            .calendar-close-btn {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1650,6 +1690,7 @@
                         
                         <!-- Popup Desplegable Estilo Windows -->
                         <div class="calendar-popup" id="calPopup">
+                            <div class="calendar-close-btn">×</div>
                             <div class="cal-nav">
                                 <button id="calPrevBtn">&lt;</button>
                                 <div id="calMonthYear">MES AÑO</div>
@@ -2530,6 +2571,15 @@
                 window.open('https://wiki.xat.com/Sky_pawn/es', '_blank');
             });
         }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('calendar-close-btn')) {
+                const calendar = document.querySelector('.calendar, .calendar-modal, .calendar-container, .calendar-popup');
+                if (calendar) {
+                    calendar.classList.remove('open');
+                }
+            }
+        });
     </script>
 </body>
 </html>
