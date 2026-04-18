@@ -817,13 +817,16 @@
             
             /* Ajuste del Calendario Popup en móvil para centrar perfecto */
             .calendar-popup {
+                position: fixed;
+                z-index: 99999;
+                top: 50%;
                 width: 100%;
                 min-width: 280px;
                 left: 50%;
-                transform: translateX(-50%) translateY(-10px);
+                transform: translate(-50%, -50%);
             }
             .calendar-popup.open {
-                transform: translateX(-50%) translateY(0);
+                transform: translate(-50%, -50%);
             }
         }
 
@@ -1095,11 +1098,31 @@
         @media (max-width: 768px) {
             body {
                 overflow-x: hidden;
+                padding-bottom: 80px;
             }
             html, body {
                 width: 100%;
                 max-width: 100%;
+                height: auto;
+                overflow-x: hidden;
             }
+            
+            /* FIX BANNERS (CORTE INFERIOR) */
+            .portfolio-banners-container,
+            .content-wrapper,
+            .right-panel {
+                padding-bottom: 120px;
+            }
+
+            /* FIJAR ICONOS ABAJO (SIN CORTE) */
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                z-index: 20000;
+            }
+
             /* Asegurar que el UI esté por encima del fondo */
             #main-panel,
             #mini-open-btn,
