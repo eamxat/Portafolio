@@ -1003,6 +1003,12 @@
             margin-top: 30px;
             width: 100%;
         }
+        
+        /* SHINE HOVER EFFECT:
+        Este efecto se aplica automáticamente a todos los banners del portafolio.
+        Cualquier nuevo banner que use la clase correspondiente heredará este comportamiento.
+        NO modificar este bloque para evitar romper la animación.
+        */
         .portfolio-banner-link {
             display: block;
             width: 100%;
@@ -1014,11 +1020,34 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.1);
             flex-shrink: 0;
+            position: relative;
+        }
+        .portfolio-banner-link::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -75%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.25) 50%,
+                rgba(255,255,255,0) 100%
+            );
+            transform: skewX(-20deg);
+            transition: none;
+            pointer-events: none;
+        }
+        .portfolio-banner-link:hover::after {
+            left: 130%;
+            transition: left 0.6s ease;
         }
         .portfolio-banner-link:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 30px rgba(255,255,255,0.15);
             border-color: rgba(255,255,255,0.3);
+            filter: brightness(1.05);
         }
         .portfolio-banner-link img {
             width: 100%;
@@ -1061,6 +1090,26 @@
         }
         #canvas-container.ready {
             opacity: 1; /* Se ilumina orgánicamente sin alteraciones de brillo bruscas */
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+            }
+            html, body {
+                width: 100%;
+                max-width: 100%;
+            }
+            #canvas-container,
+            #main-panel,
+            #mini-open-btn {
+                position: relative;
+                z-index: 10;
+            }
+        }
+
+        .window-dot {
+            display: none;
         }
     </style>
 </head>
@@ -2441,6 +2490,14 @@
                 });
             });
         });
+
+        const pawnElement = document.querySelector('.mp-pawn-icon');
+        if (pawnElement) {
+            pawnElement.style.cursor = 'pointer';
+            pawnElement.addEventListener('click', () => {
+                window.open('https://wiki.xat.com/Sky_pawn/es', '_blank');
+            });
+        }
     </script>
 </body>
 </html>
