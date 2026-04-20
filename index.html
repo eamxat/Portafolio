@@ -1467,6 +1467,103 @@
                             <img src="https://i.imgur.com/yR4haWv.png" alt="Render Footer" style="max-width: 100%; height: auto; object-fit: contain; display: block;">
                         </div>
 
+                        <!-- ========================================================
+                             NUEVA FUNCIONALIDAD: BOTÓN TRUENO Y EMBED (LATEST POWER)
+                             ======================================================== -->
+                        <style>
+                            .thunder-power-module {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                width: 100%;
+                                margin: 30px 0;
+                            }
+                            .thunder-power-btn {
+                                background: transparent;
+                                border: none;
+                                outline: none;
+                                cursor: pointer;
+                                padding: 10px;
+                                transition: transform 0.3s ease;
+                                display: inline-flex;
+                                justify-content: center;
+                                align-items: center;
+                            }
+                            .thunder-power-btn img {
+                                width: 45px;
+                                height: 45px;
+                                object-fit: contain;
+                                filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));
+                                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                            }
+                            .thunder-power-btn:hover img {
+                                transform: scale(1.15) rotate(8deg);
+                                filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
+                            }
+                            .thunder-power-btn.t-active img {
+                                transform: scale(0.95) rotate(-5deg);
+                            }
+                            .thunder-iframe-wrapper {
+                                width: 100%;
+                                max-width: 100%;
+                                height: 0;
+                                opacity: 0;
+                                overflow: hidden;
+                                transition: height 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, margin-top 0.6s ease;
+                                background: transparent;
+                                border-radius: 12px;
+                            }
+                            .thunder-iframe-wrapper.t-open {
+                                height: 700px;
+                                opacity: 1;
+                                margin-top: 20px;
+                            }
+                            .thunder-iframe-wrapper iframe {
+                                width: 100%;
+                                height: 100%;
+                                border: none;
+                                background: transparent;
+                            }
+                        </style>
+                        
+                        <div class="thunder-power-module">
+                            <button class="thunder-power-btn" id="thunderPowerBtn">
+                                <img src="https://s0.xat.com/web_gear/chat/GetStrip8.php?c=a_(allpowers)_40" alt="Trueno Power">
+                            </button>
+                            <div class="thunder-iframe-wrapper" id="thunderIframeWrapper">
+                                <iframe src="https://eamxat.github.io/LatestPower/index.html" loading="lazy" title="Latest Power"></iframe>
+                            </div>
+                        </div>
+                        
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const btn = document.getElementById('thunderPowerBtn');
+                                const wrapper = document.getElementById('thunderIframeWrapper');
+                                
+                                if (btn && wrapper) {
+                                    btn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        if (wrapper.classList.contains('t-open')) {
+                                            wrapper.classList.remove('t-open');
+                                            btn.classList.remove('t-active');
+                                        } else {
+                                            wrapper.classList.add('t-open');
+                                            btn.classList.add('t-active');
+                                            
+                                            // Scroll suave automático hacia el iframe al abrir
+                                            setTimeout(() => {
+                                                wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            }, 100);
+                                        }
+                                    });
+                                }
+                            });
+                        </script>
+                        <!-- ========================================================
+                             FIN NUEVA FUNCIONALIDAD
+                             ======================================================== -->
+
                     </div> <!-- CIERRE DE HOME CONTENT -->
 
                     <!-- ENVOLTORIO DINÁMICO: NUEVA SECCIÓN DE PORTAFOLIO -->
