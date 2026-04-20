@@ -745,6 +745,21 @@
             100% { background-position: 200% center; }
         }
 
+        /* --- NUEVOS ESTILOS PARA ICONO DE JUEGOS EN SIDEBAR --- */
+        .game-nav-wrapper {
+            margin-top: 15px; 
+            margin-bottom: 15px;
+        }
+        .game-icon-btn {
+            width: 70px; 
+            height: 70px; 
+            padding: 10px; 
+            transition: transform 0.3s ease !important;
+        }
+        .game-icon-btn:hover {
+            transform: scale(1.15) !important;
+        }
+
         /* =========================================
            RESPONSIVE DESIGN (TABLET & MOBILE)
            ========================================= */
@@ -798,6 +813,19 @@
             .modal-content { width: 95%; height: 85%; padding: 20px; }
             .close-modal { top: 10px; right: 15px; }
             .downloads-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            
+            /* Ajuste responsivo del botón de juegos para barra móvil */
+            .game-nav-wrapper {
+                margin: 0 !important;
+            }
+            .game-icon-btn {
+                width: 40px; 
+                height: 40px;
+                padding: 8px;
+            }
+            .game-icon-btn:hover {
+                transform: scale(1.1) !important;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1344,6 +1372,19 @@
                         <img src="https://i.imgur.com/v1dAhMt.png" alt="PCback Gratuitos">
                     </div>
                 </div>
+
+                <!-- NUEVO ICONO DE JUEGO (XAT RPS) -->
+                <div class="nav-item game-nav-wrapper" id="gameBtn">
+                    <div class="icon-glass-fx rounded game-icon-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.5));">
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                            <path d="M6 12h4"></path>
+                            <path d="M8 10v4"></path>
+                            <path d="M15 13h.01"></path>
+                            <path d="M18 11h.01"></path>
+                        </svg>
+                    </div>
+                </div>
                 
                 <a href="https://xat.com/xatframe" target="_blank" class="nav-item" style="margin-top: auto; margin-bottom: 15px;">
                     <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
@@ -1464,7 +1505,7 @@
 
                         <!-- NUEVO RENDER FOOTER MOVÍDO EXCLUSIVAMENTE AL INICIO -->
                         <div class="footer-render-wrapper">
-                            <img src="https://i.imgur.com/Urwdpmd.png" alt="Render Footer" style="max-width: 100%; height: auto; object-fit: contain; display: block;">
+                            <img src="https://i.imgur.com/yR4haWv.png" alt="Render Footer" style="max-width: 100%; height: auto; object-fit: contain; display: block;">
                         </div>
 
                         <!-- ========================================================
@@ -1687,6 +1728,22 @@
                         </div>
 
                     </div> <!-- CIERRE DE PORTFOLIO CONTENT -->
+
+                    <!-- ENVOLTORIO DINÁMICO: NUEVA SECCIÓN DE JUEGOS (XAT RPS) -->
+                    <div id="game-content" style="display: none; flex-direction: column; gap: 40px; width: 100%;">
+                        
+                        <div style="display: flex; justify-content: flex-start;">
+                            <button class="btn-glass" id="backToHomeFromGameBtn" style="padding: 10px 25px; font-size: 0.8rem; box-shadow: none;">
+                                VOLVER
+                            </button>
+                        </div>
+
+                        <!-- Contenedor del Iframe del Juego -->
+                        <div class="glass-card" style="width: 100%; padding: 0; overflow: hidden; display: flex; flex-direction: column; border-radius: 12px; background: transparent;">
+                            <iframe src="https://eamxat.github.io/XatRPS/index.html" style="width: 100%; height: 80vh; min-height: 650px; border: none; background: transparent;" title="Xat RPS Game" loading="lazy"></iframe>
+                        </div>
+
+                    </div> <!-- CIERRE DE GAME CONTENT -->
 
                 </div> <!-- CIERRE DE CONTENT WRAPPER -->
 
@@ -1936,12 +1993,23 @@
         const homeContent = document.getElementById('home-content');
         const portfolioContent = document.getElementById('portfolio-content');
         const backToHomeBtn = document.getElementById('backToHomeBtn');
+        
+        // Nuevos elementos de sección Juego
+        const gameBtn = document.getElementById('gameBtn');
+        const gameContent = document.getElementById('game-content');
+        const backToHomeFromGameBtn = document.getElementById('backToHomeFromGameBtn');
 
         if(homeBtn && homeContent && portfolioContent) {
             homeBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 portfolioContent.style.display = 'none';
                 portfolioContent.classList.remove('fade-in-section-anim');
+                
+                // Ocultar juego si existe
+                if(typeof gameContent !== 'undefined' && gameContent) {
+                    gameContent.style.display = 'none';
+                    gameContent.classList.remove('fade-in-section-anim');
+                }
                 
                 homeContent.style.display = 'flex';
                 homeContent.classList.add('fade-in-section-anim');
@@ -1961,6 +2029,12 @@
                 homeContent.style.display = 'none';
                 homeContent.classList.remove('fade-in-section-anim');
                 
+                // Ocultar juego si existe
+                if(typeof gameContent !== 'undefined' && gameContent) {
+                    gameContent.style.display = 'none';
+                    gameContent.classList.remove('fade-in-section-anim');
+                }
+                
                 portfolioContent.style.display = 'flex';
                 portfolioContent.classList.add('fade-in-section-anim');
                 
@@ -1978,10 +2052,63 @@
                 portfolioContent.style.display = 'none';
                 portfolioContent.classList.remove('fade-in-section-anim');
                 
+                // Ocultar juego si existe
+                if(typeof gameContent !== 'undefined' && gameContent) {
+                    gameContent.style.display = 'none';
+                    gameContent.classList.remove('fade-in-section-anim');
+                }
+                
                 homeContent.style.display = 'flex';
                 homeContent.classList.add('fade-in-section-anim');
                 
                 // Restore active state to Home
+                if(homeBtn) {
+                    document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
+                    homeBtn.classList.add('active');
+                }
+
+                const mainCanvas = document.querySelector('.main-canvas');
+                if(mainCanvas) mainCanvas.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+
+        // --- LÓGICA DE LA NUEVA SECCIÓN DE JUEGOS ---
+        if(gameBtn && gameContent && homeContent && portfolioContent) {
+            gameBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Ocultar Home y Portafolio
+                homeContent.style.display = 'none';
+                homeContent.classList.remove('fade-in-section-anim');
+                portfolioContent.style.display = 'none';
+                portfolioContent.classList.remove('fade-in-section-anim');
+                
+                // Mostrar Juego
+                gameContent.style.display = 'flex';
+                gameContent.classList.add('fade-in-section-anim');
+                
+                // Actualizar estado activo en la barra lateral
+                document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
+                gameBtn.classList.add('active');
+
+                const mainCanvas = document.querySelector('.main-canvas');
+                if(mainCanvas) mainCanvas.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+
+        if(backToHomeFromGameBtn && homeContent && gameContent) {
+            backToHomeFromGameBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Ocultar Juego
+                gameContent.style.display = 'none';
+                gameContent.classList.remove('fade-in-section-anim');
+                
+                // Mostrar Home
+                homeContent.style.display = 'flex';
+                homeContent.classList.add('fade-in-section-anim');
+                
+                // Restaurar estado activo en Home
                 if(homeBtn) {
                     document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
                     homeBtn.classList.add('active');
