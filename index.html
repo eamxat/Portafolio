@@ -1469,6 +1469,7 @@
 
                         <!-- ========================================================
                              NUEVA FUNCIONALIDAD: BOTÓN TRUENO Y EMBED (LATEST POWER)
+                             (Ubicado debajo de las secciones/folders PCBACK y PSTYLE)
                              ======================================================== -->
                         <style>
                             .thunder-power-module {
@@ -1478,6 +1479,8 @@
                                 justify-content: center;
                                 width: 100%;
                                 margin: 30px 0;
+                                position: relative;
+                                z-index: 10;
                             }
                             .thunder-power-btn {
                                 background: transparent;
@@ -1489,10 +1492,11 @@
                                 display: inline-flex;
                                 justify-content: center;
                                 align-items: center;
+                                z-index: 2;
                             }
                             .thunder-power-btn img {
-                                width: 45px;
-                                height: 45px;
+                                width: 100px;
+                                height: 100px;
                                 object-fit: contain;
                                 filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));
                                 transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -1501,36 +1505,42 @@
                                 transform: scale(1.15) rotate(8deg);
                                 filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
                             }
-                            .thunder-power-btn.t-active img {
+                            .thunder-power-btn.t-hidden img {
                                 transform: scale(0.95) rotate(-5deg);
+                                filter: grayscale(50%) drop-shadow(0 0 5px rgba(255,255,255,0.2));
                             }
                             .thunder-iframe-wrapper {
                                 width: 100%;
                                 max-width: 100%;
-                                height: 0;
-                                opacity: 0;
+                                /* INICIA VISIBLE POR DEFECTO */
+                                height: 700px;
+                                opacity: 1;
+                                margin-top: 20px;
                                 overflow: hidden;
                                 transition: height 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, margin-top 0.6s ease;
                                 background: transparent;
                                 border-radius: 12px;
                             }
-                            .thunder-iframe-wrapper.t-open {
-                                height: 700px;
-                                opacity: 1;
-                                margin-top: 20px;
+                            .thunder-iframe-wrapper.t-closed {
+                                /* ESTADO OCULTO */
+                                height: 0 !important;
+                                opacity: 0 !important;
+                                margin-top: 0 !important;
+                                pointer-events: none;
                             }
                             .thunder-iframe-wrapper iframe {
                                 width: 100%;
-                                height: 100%;
+                                height: 700px;
                                 border: none;
                                 background: transparent;
                             }
                         </style>
                         
-                        <div class="thunder-power-module">
+                        <div class="thunder-power-module" id="thunderPowerModule">
                             <button class="thunder-power-btn" id="thunderPowerBtn">
-                                <img src="https://s0.xat.com/web_gear/chat/GetStrip8.php?c=a_(allpowers)_40" alt="Trueno Power">
+                                <img src="https://s0.xat.com/web_gear/chat/GetStrip8.php?c=a_(allpowers)_80" alt="Trueno Power">
                             </button>
+                            <!-- Contenedor del Iframe visible por defecto -->
                             <div class="thunder-iframe-wrapper" id="thunderIframeWrapper">
                                 <iframe src="https://eamxat.github.io/LatestPower/index.html" loading="lazy" title="Latest Power"></iframe>
                             </div>
@@ -1544,17 +1554,20 @@
                                 if (btn && wrapper) {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        if (wrapper.classList.contains('t-open')) {
-                                            wrapper.classList.remove('t-open');
-                                            btn.classList.remove('t-active');
-                                        } else {
-                                            wrapper.classList.add('t-open');
-                                            btn.classList.add('t-active');
+                                        // Alternar visibilidad (Toggle)
+                                        if (wrapper.classList.contains('t-closed')) {
+                                            // Si está oculto, lo mostramos
+                                            wrapper.classList.remove('t-closed');
+                                            btn.classList.remove('t-hidden');
                                             
                                             // Scroll suave automático hacia el iframe al abrir
                                             setTimeout(() => {
                                                 wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                             }, 100);
+                                        } else {
+                                            // Si está visible, lo ocultamos con animación suave
+                                            wrapper.classList.add('t-closed');
+                                            btn.classList.add('t-hidden');
                                         }
                                     });
                                 }
