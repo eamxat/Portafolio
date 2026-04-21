@@ -2817,6 +2817,37 @@
                 }
             }
         });
+
+        // --- LÓGICA DE ESTADO EN LÍNEA (API ILLUXAT) ---
+        async function checkOnlineStatus() {
+            try {
+                const response = await fetch('https://illuxat.com/api/online/EAM96', {
+                    headers: { 'accept': '*/*' }
+                });
+                const result = await response.json();
+                
+                const statusDot = document.querySelector('.status-dot');
+                const statusText = document.querySelector('.status-text');
+                
+                if (statusDot && statusText && result.code === 200) {
+                    if (result.data && result.data.status === "Available") {
+                        statusText.textContent = "En línea";
+                        statusDot.style.backgroundColor = "#22c55e"; // Verde
+                        statusDot.style.boxShadow = "0 0 10px #22c55e";
+                    } else {
+                        statusText.textContent = "Desconectado";
+                        statusDot.style.backgroundColor = "#ef4444"; // Rojo
+                        statusDot.style.boxShadow = "0 0 10px #ef4444";
+                    }
+                }
+            } catch (error) {
+                console.error("Error al obtener el estado en línea:", error);
+            }
+        }
+
+        // Consultar estado al cargar la página y actualizar cada 60 segundos
+        checkOnlineStatus();
+        setInterval(checkOnlineStatus, 60000);
     </script>
 </body>
 </html>
