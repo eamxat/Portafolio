@@ -2820,28 +2820,66 @@
 
         // --- LÓGICA DE ESTADO EN LÍNEA (API ILLUXAT) ---
         async function checkOnlineStatus() {
-            try {
-                const response = await fetch('https://illuxat.com/api/online/EAM96', {
-                    headers: { 'accept': '*/*' }
-                });
-                const result = await response.json();
-                
-                const statusDot = document.querySelector('.status-dot');
-                const statusText = document.querySelector('.status-text');
-                
-                if (statusDot && statusText && result.code === 200) {
-                    if (result.data && result.data.status === "Available") {
-                        statusText.textContent = "En línea";
-                        statusDot.style.backgroundColor = "#22c55e"; // Verde
-                        statusDot.style.boxShadow = "0 0 10px #22c55e";
-                    } else {
-                        statusText.textContent = "Desconectado";
-                        statusDot.style.backgroundColor = "#ef4444"; // Rojo
-                        statusDot.style.boxShadow = "0 0 10px #ef4444";
+            const statusDot = document.querySelector('.status-dot');
+            const statusText = document.querySelector('.status-text');
+            
+            if (!statusDot || !statusText) return;
+
+            const setOffline = () => {
+                statusText.textContent = "Desconectado";
+                statusDot.style.backgroundColor = "#ef4444"; // Rojo
+                statusDot.style.boxShadow = "0 0 10px #ef4444";
+            };
+
+            const setOnline = () => {
+                statusText.textContent = "En línea";
+                statusDot.style.backgroundColor = "#22c55e"; // Verde
+                statusDot.style.boxShadow = "0 0 10px #22c55e";
+            };
+
+            const setAvailable = () => {
+                statusText.textContent = "Disponible";
+                statusDot.style.backgroundColor = "#f97316"; // Naranja
+                statusDot.style.boxShadow = "0 0 10px #f97316";
+            };
+
+            // Función unificada para procesar el resultado de la API
+            const processResult = (result) => {
+                if (result && result.code === 200 && result.data && result.data.status) {
+                    const currentStatus = result.data.status.toLowerCase();
+                    if (currentStatus === "online") {
+                        setOnline();
+                        return;
+                    } else if (currentStatus === "available") {
+                        setAvailable();
+                        return;
                     }
                 }
+                setOffline();
+            };
+
+            try {
+                // 1. Intento directo con anti-caché y sin headers (evita bloqueos CORS OPTIONS)
+                const timestamp = new Date().getTime();
+                const targetUrl = `https://illuxat.com/api/online/EAM96?t=${timestamp}`;
+                
+                const response = await fetch(targetUrl);
+                if (!response.ok) throw new Error("Direct fetch failed");
+                
+                const result = await response.json();
+                processResult(result);
+
             } catch (error) {
-                console.error("Error al obtener el estado en línea:", error);
+                // 2. Si falla (CORS o error de red), intentamos con un Proxy CORS confiable
+                try {
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://illuxat.com/api/online/EAM96')}`;
+                    const proxyResponse = await fetch(proxyUrl, { cache: "no-store" });
+                    const proxyResult = await proxyResponse.json();
+                    processResult(proxyResult);
+                } catch (proxyError) {
+                    console.error("Error al obtener estado en línea:", proxyError);
+                    setOffline();
+                }
             }
         }
 
