@@ -1385,6 +1385,21 @@
                         </svg>
                     </div>
                 </div>
+
+                <!-- ======================================================== -->
+                <!-- INICIO NUEVO ICONO BÚSQUEDA (IDÉNTICO A JUEGOS)          -->
+                <!-- ======================================================== -->
+                <div class="nav-item game-nav-wrapper" id="searchBtn">
+                    <div class="icon-glass-fx rounded game-icon-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 50% !important; height: 50% !important; filter: drop-shadow(0 0 8px rgba(255,255,255,0.5));">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                </div>
+                <!-- ======================================================== -->
+                <!-- FIN NUEVO ICONO BÚSQUEDA                                 -->
+                <!-- ======================================================== -->
                 
                 <a href="https://xat.com/xatframe" target="_blank" class="nav-item" style="margin-top: auto; margin-bottom: 15px;">
                     <div class="icon-glass-fx rounded" style="width: 36px; height: 36px; padding: 8px;">
@@ -1745,6 +1760,27 @@
 
                     </div> <!-- CIERRE DE GAME CONTENT -->
 
+                    <!-- ======================================================== -->
+                    <!-- ENVOLTORIO DINÁMICO: NUEVA SECCIÓN DE BÚSQUEDA           -->
+                    <!-- ======================================================== -->
+                    <div id="search-content" style="display: none; flex-direction: column; gap: 40px; width: 100%;">
+                        
+                        <div style="display: flex; justify-content: flex-start;">
+                            <button class="btn-glass" id="backToHomeFromSearchBtn" style="padding: 10px 25px; font-size: 0.8rem; box-shadow: none;">
+                                VOLVER
+                            </button>
+                        </div>
+
+                        <!-- Contenedor del Iframe de Búsqueda -->
+                        <div class="glass-card" style="width: 100%; padding: 0; overflow: hidden; display: flex; flex-direction: column; border-radius: 12px; background: transparent;">
+                            <iframe src="https://eamxat.github.io/Search/" style="width: 100%; height: 80vh; min-height: 650px; border: none; background: transparent;" title="Xat Search" loading="lazy"></iframe>
+                        </div>
+
+                    </div>
+                    <!-- ======================================================== -->
+                    <!-- CIERRE DE SEARCH CONTENT                                 -->
+                    <!-- ======================================================== -->
+
                 </div> <!-- CIERRE DE CONTENT WRAPPER -->
 
             </main>
@@ -1999,6 +2035,11 @@
         const gameContent = document.getElementById('game-content');
         const backToHomeFromGameBtn = document.getElementById('backToHomeFromGameBtn');
 
+        // Nuevos elementos de sección Búsqueda
+        const searchBtn = document.getElementById('searchBtn');
+        const searchContent = document.getElementById('search-content');
+        const backToHomeFromSearchBtn = document.getElementById('backToHomeFromSearchBtn');
+
         if(homeBtn && homeContent && portfolioContent) {
             homeBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -2009,6 +2050,12 @@
                 if(typeof gameContent !== 'undefined' && gameContent) {
                     gameContent.style.display = 'none';
                     gameContent.classList.remove('fade-in-section-anim');
+                }
+
+                // Ocultar búsqueda si existe
+                if(typeof searchContent !== 'undefined' && searchContent) {
+                    searchContent.style.display = 'none';
+                    searchContent.classList.remove('fade-in-section-anim');
                 }
                 
                 homeContent.style.display = 'flex';
@@ -2034,6 +2081,12 @@
                     gameContent.style.display = 'none';
                     gameContent.classList.remove('fade-in-section-anim');
                 }
+
+                // Ocultar búsqueda si existe
+                if(typeof searchContent !== 'undefined' && searchContent) {
+                    searchContent.style.display = 'none';
+                    searchContent.classList.remove('fade-in-section-anim');
+                }
                 
                 portfolioContent.style.display = 'flex';
                 portfolioContent.classList.add('fade-in-section-anim');
@@ -2057,6 +2110,12 @@
                     gameContent.style.display = 'none';
                     gameContent.classList.remove('fade-in-section-anim');
                 }
+
+                // Ocultar búsqueda si existe
+                if(typeof searchContent !== 'undefined' && searchContent) {
+                    searchContent.style.display = 'none';
+                    searchContent.classList.remove('fade-in-section-anim');
+                }
                 
                 homeContent.style.display = 'flex';
                 homeContent.classList.add('fade-in-section-anim');
@@ -2077,11 +2136,15 @@
             gameBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 
-                // Ocultar Home y Portafolio
+                // Ocultar Home, Portafolio y Búsqueda
                 homeContent.style.display = 'none';
                 homeContent.classList.remove('fade-in-section-anim');
                 portfolioContent.style.display = 'none';
                 portfolioContent.classList.remove('fade-in-section-anim');
+                if(typeof searchContent !== 'undefined' && searchContent) {
+                    searchContent.style.display = 'none';
+                    searchContent.classList.remove('fade-in-section-anim');
+                }
                 
                 // Mostrar Juego
                 gameContent.style.display = 'flex';
@@ -2118,6 +2181,63 @@
                 if(mainCanvas) mainCanvas.scrollTo({top: 0, behavior: 'smooth'});
             });
         }
+
+        // ========================================================
+        // INICIO LÓGICA DE LA NUEVA SECCIÓN DE BÚSQUEDA
+        // ========================================================
+        if(searchBtn && searchContent && homeContent && portfolioContent) {
+            searchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Ocultar Home, Portafolio y Juego
+                homeContent.style.display = 'none';
+                homeContent.classList.remove('fade-in-section-anim');
+                portfolioContent.style.display = 'none';
+                portfolioContent.classList.remove('fade-in-section-anim');
+                
+                if(typeof gameContent !== 'undefined' && gameContent) {
+                    gameContent.style.display = 'none';
+                    gameContent.classList.remove('fade-in-section-anim');
+                }
+                
+                // Mostrar Búsqueda
+                searchContent.style.display = 'flex';
+                searchContent.classList.add('fade-in-section-anim');
+                
+                // Actualizar estado activo en la barra lateral
+                document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
+                searchBtn.classList.add('active');
+
+                const mainCanvas = document.querySelector('.main-canvas');
+                if(mainCanvas) mainCanvas.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+
+        if(backToHomeFromSearchBtn && homeContent && searchContent) {
+            backToHomeFromSearchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Ocultar Búsqueda
+                searchContent.style.display = 'none';
+                searchContent.classList.remove('fade-in-section-anim');
+                
+                // Mostrar Home
+                homeContent.style.display = 'flex';
+                homeContent.classList.add('fade-in-section-anim');
+                
+                // Restaurar estado activo en Home
+                if(homeBtn) {
+                    document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
+                    homeBtn.classList.add('active');
+                }
+
+                const mainCanvas = document.querySelector('.main-canvas');
+                if(mainCanvas) mainCanvas.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+        // ========================================================
+        // FIN LÓGICA DE LA NUEVA SECCIÓN DE BÚSQUEDA
+        // ========================================================
 
         // Lógica de Play/Pause automático al pasar el ratón en la nueva galería Portafolio
         document.querySelectorAll('.portfolio-inline-card').forEach(card => {
